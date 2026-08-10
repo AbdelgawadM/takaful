@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>إتمام الشراء | تكافل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body data-footer="none">
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+  <div class="container" style="padding-block:28px 60px;max-width:980px">
+
+    <!-- Steps indicator -->
+    <div class="steps" id="steps" aria-label="خطوات الشراء"></div>
+
+    <div class="checkout-layout">
+      <div>
+        <!-- STEP 1: beneficiary confirm -->
+        <section class="pane active" id="pane-1" aria-label="المستفيد">
+          <h1 class="t-h2" style="margin-bottom:8px">تأكيد المستفيد</h1>
+          <p class="t-caption" style="margin-bottom:24px">ستصدر القسيمة باسم المستفيد المحدد ولا يمكن نقلها بعد الإصدار.</p>
+          <div class="beneficiary-list" id="ben-list" style="max-width:460px"></div>
+          <div style="display:flex;gap:10px;margin-top:28px">
+            <button class="btn btn-primary btn-lg" data-next="2">متابعة</button>
+            <a class="btn btn-ghost btn-lg" id="back-to-service" href="services.html">رجوع</a>
+          </div>
+        </section>
+
+        <!-- STEP 2: login requirement -->
+        <section class="pane" id="pane-2" aria-label="تسجيل الدخول">
+          <h1 class="t-h2" style="margin-bottom:8px">سجّل دخولك للمتابعة</h1>
+          <p class="t-caption" style="margin-bottom:24px">الشراء لا يتطلب عضوية — فقط تسجيل الدخول والتحقق من رقم الجوال.</p>
+          <div class="card info-card" style="max-width:460px">
+            <div class="field">
+              <label for="co-phone">رقم الجوال</label>
+              <div class="phone-input">
+                <span class="cc">+966</span>
+                <input id="co-phone" type="tel" inputmode="numeric" placeholder="5X XXX XXXX" maxlength="9" autocomplete="tel">
+              </div>
+              <span class="hint">سنرسل رمز تحقق لمرة واحدة (نموذج عرض — أي رقم يقبل)</span>
+            </div>
+            <button class="btn btn-primary btn-block" id="send-otp">أرسل رمز التحقق</button>
+            <div id="otp-area" hidden style="display:grid;gap:14px">
+              <div class="otp-row" dir="ltr">
+                ${""}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 3: payment -->
+        <section class="pane" id="pane-3" aria-label="الدفع">
+          <h1 class="t-h2" style="margin-bottom:8px">الدفع</h1>
+          <p class="t-caption" style="margin-bottom:24px">واجهة دفع تجريبية — لن يتم خصم أي مبلغ فعلي.</p>
+          <div class="pay-methods" style="max-width:460px" id="pay-methods">
+            <button class="pay-method selected" data-pm="mada">
+              <span class="pm-logo" style="background:linear-gradient(120deg,#1a936f,#0e6558)">مدى</span>
+              مدى <span class="t-caption" style="font-weight:400;margin-inline-start:auto">بطاقة بنكية محلية</span>
+            </button>
+            <button class="pay-method" data-pm="applepay">
+              <span class="pm-logo" style="background:#0e2557"> Pay</span>
+              Apple Pay <span class="t-caption" style="font-weight:400;margin-inline-start:auto">دفع سريع</span>
+            </button>
+            <button class="pay-method" data-pm="visa">
+              <span class="pm-logo" style="background:linear-gradient(120deg,#20345c,#101b30)">VISA</span>
+              بطاقة ائتمانية <span class="t-caption" style="font-weight:400;margin-inline-start:auto">Visa / Mastercard</span>
+            </button>
+          </div>
+          <div class="card-form" id="card-form" style="max-width:460px">
+            <div class="field"><label for="cc-num">رقم البطاقة</label><input class="input" id="cc-num" inputmode="numeric" placeholder="0000 0000 0000 0000" dir="ltr" style="text-align:left"></div>
+            <div class="field"><label for="cc-exp">تاريخ الانتهاء</label><input class="input" id="cc-exp" placeholder="MM/YY" dir="ltr" style="text-align:left"></div>
+            <div class="field"><label for="cc-cvv">CVV</label><input class="input" id="cc-cvv" inputmode="numeric" maxlength="3" placeholder="•••" dir="ltr" style="text-align:left"></div>
+          </div>
+          <button class="btn btn-primary btn-lg" id="pay-btn" style="margin-top:24px;min-width:240px">ادفع <span id="pay-amount"></span> ر.س</button>
+        </section>
+
+        <!-- STEP 4: success + voucher -->
+        <section class="pane" id="pane-4" aria-label="نجاح العملية">
+          <div class="success-wrap">
+            <div class="success-ring">
+              <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path class="draw" d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+            </div>
+            <h1 class="t-h2">تم الدفع بنجاح 🎉</h1>
+            <p class="t-caption" style="max-width:44ch">صدرت قسيمتك وهي <b style="color:var(--c-success)">جاهزة للاستخدام</b>. أظهر رمز QR عند الفرع، وستجدها دائمًا في «مشترياتي».</p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+              <a class="btn btn-primary btn-lg" id="view-voucher" href="voucher.html">عرض القسيمة</a>
+              <a class="btn btn-secondary btn-lg" href="index.html">العودة للرئيسية</a>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Order summary -->
+      <aside>
+        <div class="card summary-card reveal" id="summary"></div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { icon, sar } = TK;
+  const params = new URLSearchParams(location.search);
+  const s = TK.services.find(x => x.id === params.get("id")) || TK.services[0];
+  const p = TK.providers.find(x => x.id === s.providerId);
+  let benId = params.get("ben") || "self";
+  let step = 1;
+
+  TK.$("#back-to-service").href = `service.html?id=${s.id}`;
+  TK.$("#view-voucher").href = `voucher.html?new=1&id=${s.id}&ben=${benId}`;
+  TK.$("#pay-amount").textContent = sar(s.price);
+
+  const STEPS = ["المستفيد", "الدخول", "الدفع", "القسيمة"];
+  function renderSteps() {
+    TK.$("#steps").innerHTML = STEPS.map((label, i) => {
+      const n = i + 1;
+      const cls = n < step ? "done" : n === step ? "active" : "";
+      return `<div class="step ${cls}"><span class="s-dot">${n < step ? icon("check", 16) : n}</span><span class="s-label">${label}</span></div>` +
+        (n < STEPS.length ? `<span class="step-bar ${n < step ? "done" : ""}"></span>` : "");
+    }).join("");
+  }
+
+  function goTo(n) {
+    step = n; renderSteps();
+    TK.$$(".pane").forEach(x => x.classList.remove("active"));
+    TK.$(`#pane-${n}`).classList.add("active");
+    scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* Beneficiaries */
+  const beneficiaries = [{ id: "self", name: TK.user.name, relation: "أنا", initial: "ع" }, ...TK.user.dependents];
+  function benName() { return (beneficiaries.find(b => b.id === benId) || beneficiaries[0]).name; }
+  TK.$("#ben-list").innerHTML = beneficiaries.map((b, i) => `
+    <button class="beneficiary-item ${b.id === benId ? "selected" : ""}" data-ben="${b.id}">
+      <span class="avatar" style="width:38px;height:38px;background:hsl(${170 + i * 40},45%,40%)">${b.initial || b.name[0]}</span>
+      <span><span class="b-name">${b.name}</span><br><span class="b-rel">${b.relation}</span></span>
+      <span class="b-check">${icon("check", 20)}</span>
+    </button>`).join("");
+  TK.$("#ben-list").addEventListener("click", e => {
+    const item = e.target.closest(".beneficiary-item"); if (!item) return;
+    TK.$$("#ben-list .beneficiary-item").forEach(b => b.classList.remove("selected"));
+    item.classList.add("selected"); benId = item.dataset.ben;
+    TK.$("#view-voucher").href = `voucher.html?new=1&id=${s.id}&ben=${benId}`;
+    renderSummary();
+  });
+
+  /* Summary */
+  const vat = Math.round(s.price * 0.15 / 1.15);
+  function renderSummary() {
+    TK.$("#summary").innerHTML = `
+      <div style="display:flex;gap:12px;align-items:center">
+        <span style="width:56px;height:56px;border-radius:14px;overflow:hidden;flex-shrink:0">${TK.art(s.hue, 4)}</span>
+        <div style="min-width:0">
+          <b style="color:var(--c-ink);font-size:var(--fs-body);display:block">${s.title}</b>
+          <span class="t-caption">${p.name}</span>
+        </div>
+      </div>
+      <hr class="hr-dashed" style="margin-block:6px">
+      <div class="sum-row"><span>المستفيد</span><b style="color:var(--c-ink)">${benName()}</b></div>
+      <div class="sum-row"><span>السعر قبل التوفير</span><span style="text-decoration:line-through">${sar(s.was)} ر.س</span></div>
+      <div class="sum-row" style="color:var(--c-success);font-weight:600"><span>توفيرك المثبت</span><span>- ${sar(s.was - s.price)} ر.س</span></div>
+      <div class="sum-row"><span>شامل ضريبة القيمة المضافة</span><span>${sar(vat)} ر.س</span></div>
+      <div class="sum-row total"><span>الإجمالي</span><span>${sar(s.price)} ر.س</span></div>
+      <p class="t-caption" style="display:flex;gap:6px;align-items:center">${icon("clock", 14)} صالحة ${s.validityDays} يومًا · ${icon("shield", 14)} إلغاء وفق السياسة المعلنة</p>`;
+  }
+  renderSummary();
+
+  /* Step 1 → 2 */
+  document.addEventListener("click", e => {
+    const nxt = e.target.closest("[data-next]");
+    if (nxt) goTo(+nxt.dataset.next);
+  });
+
+  /* Step 2: phone + OTP mock */
+  TK.$("#send-otp").addEventListener("click", () => {
+    const phone = TK.$("#co-phone");
+    if (phone.value.trim().length < 9) {
+      phone.classList.add("error"); phone.focus();
+      TK.toast("أدخل رقم جوال من 9 أرقام يبدأ بـ 5", "info");
+      return;
+    }
+    phone.classList.remove("error");
+    const area = TK.$("#otp-area");
+    area.hidden = false;
+    area.innerHTML = `
+      <p class="t-caption" style="text-align:center">أدخل الرمز المرسل إلى <b style="direction:ltr;display:inline-block">+966 ${phone.value}</b></p>
+      <div class="otp-row">${Array.from({ length: 4 }, (_, i) => `<input class="otp-box" maxlength="1" inputmode="numeric" aria-label="خانة الرمز ${i + 1}">`).join("")}</div>
+      <p class="resend">لم يصلك الرمز؟ <button id="resend-btn" disabled>إعادة الإرسال (<span id="rs-count">30</span>)</button></p>`;
+    const boxes = TK.$$(".otp-box", area);
+    boxes[0].focus();
+    boxes.forEach((b, i) => {
+      b.addEventListener("input", () => {
+        b.classList.toggle("filled", !!b.value);
+        if (b.value && i < 3) boxes[i + 1].focus();
+        if (boxes.every(x => x.value)) setTimeout(() => { TK.toast("تم التحقق من رقم الجوال ✓"); goTo(3); }, 350);
+      });
+      b.addEventListener("keydown", ev => { if (ev.key === "Backspace" && !b.value && i > 0) boxes[i - 1].focus(); });
+    });
+    let c = 30;
+    const t = setInterval(() => {
+      c--; const el = TK.$("#rs-count");
+      if (!el) return clearInterval(t);
+      el.textContent = c;
+      if (c <= 0) { clearInterval(t); const rb = TK.$("#resend-btn"); rb.disabled = false; rb.textContent = "إعادة الإرسال"; rb.onclick = () => TK.toast("أُعيد إرسال الرمز (نموذج عرض)", "info"); }
+    }, 1000);
+  });
+
+  /* Step 3: payment mock */
+  TK.$("#pay-methods").addEventListener("click", e => {
+    const m = e.target.closest(".pay-method"); if (!m) return;
+    TK.$$(".pay-method").forEach(x => x.classList.remove("selected"));
+    m.classList.add("selected");
+    TK.$("#card-form").style.display = m.dataset.pm === "applepay" ? "none" : "grid";
+  });
+  TK.$("#pay-btn").addEventListener("click", function () {
+    this.disabled = true;
+    this.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation:spin 1s linear infinite"><path d="M12 3a9 9 0 1 0 9 9"/></svg> جاري معالجة الدفع…`;
+    setTimeout(() => goTo(4), 1600);
+  });
+
+  goTo(1);
+});
+</script>
+<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+</body>
+</html>

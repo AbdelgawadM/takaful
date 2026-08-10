@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تفاصيل الخدمة | تكافل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+  <div class="container" style="padding-top:20px">
+    <nav class="breadcrumb" aria-label="مسار التنقل">
+      <a href="index.html">الرئيسية</a><span class="sep">/</span>
+      <a href="services.html">اشترِ خدمة</a><span class="sep">/</span>
+      <span aria-current="page" id="bc-name">الخدمة</span>
+    </nav>
+  </div>
+  <div class="container" id="sd-root" style="padding-block:16px 40px"></div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { icon, art, sar } = TK;
+  const id = new URLSearchParams(location.search).get("id") || "s1";
+  const s = TK.services.find(x => x.id === id) || TK.services[0];
+  const p = TK.providers.find(x => x.id === s.providerId);
+  const save = s.was - s.price;
+  document.title = `${s.title} | تكافل`;
+  TK.$("#bc-name").textContent = s.title;
+
+  const beneficiaries = [{ id: "self", name: TK.user.name, relation: "أنا", initial: "ع" }, ...TK.user.dependents];
+
+  TK.$("#sd-root").innerHTML = `
+    <div class="sd-layout">
+      <div style="display:grid;gap:clamp(24px,3.5vw,36px)">
+        <div class="sd-gallery reveal-scale">
+          ${art(s.hue, 4)}
+          <span class="sc-save" style="top:16px;inset-inline-start:16px;font-size:var(--fs-caption);padding:8px 16px">${icon("trend", 15)} وفّر ${sar(save)} ر.س (${Math.round(save / s.was * 100)}%)</span>
+        </div>
+
+        <div>
+          <div class="sc-provider" style="margin-bottom:10px">
+            <span class="dot-logo" style="width:26px;height:26px;border-radius:9px;background:hsl(${p.hue},55%,36%)">${p.initial}</span>
+            <a href="provider.html?id=${p.id}" style="font-weight:600;color:var(--c-primary-700)">${p.name}</a>
+            ${p.verified ? icon("verified", 15) : ""}
+            <span class="rating" style="margin-inline-start:8px">${icon("star", 14)} ${p.rating}</span>
+          </div>
+          <h1 class="t-h2">${s.title}</h1>
+          <p style="color:var(--c-muted);margin-top:12px;max-width:65ch">${s.desc}</p>
+        </div>
+
+        <section aria-labelledby="inc-title">
+          <h2 class="t-h3" id="inc-title" style="margin-bottom:14px">ما يشمله السعر</h2>
+          <ul class="includes-list" data-stagger>
+            ${s.includes.map(i => `<li>${icon("check", 18)}<span>${i}</span></li>`).join("")}
+          </ul>
+        </section>
+
+        <section aria-labelledby="br-title">
+          <h2 class="t-h3" id="br-title" style="margin-bottom:14px">الفروع المتاحة</h2>
+          <div class="chip-row">${s.branches.map(b => `<span class="chip" style="cursor:default">${icon("pin", 14)} ${b}</span>`).join("")}</div>
+        </section>
+
+        <section aria-labelledby="pol-title">
+          <h2 class="t-h3" id="pol-title" style="margin-bottom:14px">الصلاحية وسياسة الإلغاء</h2>
+          <div class="grid grid-2">
+            <div class="card info-card"><div class="info-row">${icon("clock", 19)}<span><b style="color:var(--c-ink)">الصلاحية</b><br>${s.validityDays} يومًا من تاريخ الشراء</span></div></div>
+            <div class="card info-card"><div class="info-row">${icon("shield", 19)}<span><b style="color:var(--c-ink)">الإلغاء والاسترداد</b><br>${s.cancellation}</span></div></div>
+          </div>
+        </section>
+
+        <div class="alert alert-warning">
+          ${icon("info", 18)}
+          <span>هذه الخدمة تتطلب تسجيل الدخول والتحقق من رقم الجوال قبل الدفع — ولا تتطلب عضوية فعالة.</span>
+        </div>
+      </div>
+
+      <aside>
+        <div class="card sd-buybox reveal">
+          <div>
+            <span class="save-pill">${icon("trend", 14)} توفير مثبت ${sar(save)} ر.س</span>
+            <div class="price-row" style="margin-top:10px">
+              <span class="price-now">${sar(s.price)}<span class="cur">ر.س</span></span>
+              <span class="price-was">${sar(s.was)} ر.س</span>
+            </div>
+            <p class="t-caption">شامل الضريبة · سعر نهائي يُدفع داخل تكافل</p>
+          </div>
+
+          <div>
+            <h3 class="t-label" style="color:var(--c-muted);margin-bottom:10px">اختر المستفيد</h3>
+            <div class="beneficiary-list" id="ben-list">
+              ${beneficiaries.map((b, i) => `
+                <button class="beneficiary-item ${i === 0 ? "selected" : ""}" data-ben="${b.id}" aria-pressed="${i === 0}">
+                  <span class="avatar" style="width:38px;height:38px;background:hsl(${170 + i * 40},45%,40%)">${b.initial || b.name[0]}</span>
+                  <span><span class="b-name">${b.name}</span><br><span class="b-rel">${b.relation}</span></span>
+                  <span class="b-check">${icon("check", 20)}</span>
+                </button>`).join("")}
+            </div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:8px" data-mock="إضافة تابع جديد من حسابي ← التابعون" data-mock-kind="info">+ إضافة تابع جديد</button>
+          </div>
+
+          <a class="btn btn-primary btn-lg btn-block" id="buy-btn" href="checkout.html?id=${s.id}">اشترِ الخدمة الآن</a>
+          <p class="t-caption" style="text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">${icon("shield", 14)} دفع آمن · قسيمة QR فورية بعد الدفع</p>
+        </div>
+      </aside>
+    </div>`;
+
+  let selectedBen = "self";
+  TK.$("#ben-list").addEventListener("click", e => {
+    const item = e.target.closest(".beneficiary-item"); if (!item) return;
+    TK.$$(".beneficiary-item").forEach(b => { b.classList.remove("selected"); b.setAttribute("aria-pressed", "false"); });
+    item.classList.add("selected"); item.setAttribute("aria-pressed", "true");
+    selectedBen = item.dataset.ben;
+    TK.$("#buy-btn").href = `checkout.html?id=${s.id}&ben=${selectedBen}`;
+  });
+
+  TK.initReveal();
+});
+</script>
+</body>
+</html>

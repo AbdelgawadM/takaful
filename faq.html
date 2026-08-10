@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الأسئلة الشائعة | تكافل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+  <div class="container" style="padding-block:32px 48px;max-width:800px">
+    <nav class="breadcrumb" aria-label="مسار التنقل">
+      <a href="index.html">الرئيسية</a><span class="sep">/</span><span aria-current="page">الأسئلة الشائعة</span>
+    </nav>
+    <h1 class="t-h1" style="margin-block:16px 8px">الأسئلة الشائعة</h1>
+    <p class="t-caption" style="margin-bottom:24px">إجابات مباشرة عن أكثر ما يسأل عنه المستخدمون.</p>
+
+    <div class="search-box" style="animation:none;margin-bottom:24px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" style="color:var(--c-primary-600)"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      <input type="search" id="faq-q" placeholder="ابحث في الأسئلة…" aria-label="ابحث في الأسئلة">
+    </div>
+
+    <div id="faq-list"></div>
+    <div id="faq-empty" hidden style="margin-top:16px"></div>
+
+    <div class="card info-card" style="margin-top:36px;background:var(--c-primary-50);border-color:var(--c-primary-200);flex-direction:row;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <div style="flex:1;min-width:220px">
+        <b style="color:var(--c-ink)">لم تجد إجابتك؟</b>
+        <p class="t-caption" style="margin-top:4px">فريق الدعم يرد خلال دقائق في أوقات العمل.</p>
+      </div>
+      <a class="btn btn-primary" href="contact.html">تواصل مع الدعم</a>
+    </div>
+  </div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const list = TK.$("#faq-list");
+  function render(items) {
+    list.innerHTML = items.map((f, i) => `
+      <details class="faq-item" ${i === 0 ? "open" : ""}>
+        <summary>${f.q}<span class="fq-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+        <div class="fq-body">${f.a}</div>
+      </details>`).join("");
+  }
+  render(TK.faq);
+
+  TK.$("#faq-q").addEventListener("input", e => {
+    const q = e.target.value.trim();
+    const norm = s => s.replace(/[أإآ]/g, "ا").replace(/ة/g, "ه");
+    const hits = q ? TK.faq.filter(f => norm(f.q + f.a).includes(norm(q))) : TK.faq;
+    TK.$("#faq-empty").hidden = !!hits.length;
+    if (!hits.length) {
+      TK.$("#faq-empty").innerHTML = `
+        <div class="state-block">
+          <div class="st-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg></div>
+          <h3>لا يوجد سؤال مطابق</h3>
+          <p>جرّب صياغة أخرى، أو اسأل فريق الدعم مباشرة.</p>
+          <div class="st-actions"><a class="btn btn-primary" href="contact.html">اسأل الدعم</a></div>
+        </div>`;
+    }
+    render(hits);
+  });
+});
+</script>
+</body>
+</html>

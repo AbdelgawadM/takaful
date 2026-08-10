@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تسجيل الدخول | تكافل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body class="auth-page" data-footer="none">
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+  <div class="auth-shell container">
+    <div class="card auth-card reveal-scale in">
+
+      <!-- PANE: welcome / phone -->
+      <div class="pane active" id="a-phone">
+        <div style="text-align:center;display:grid;gap:8px;justify-items:center">
+          <img class="brand-logo" src="assets/img/logo.png" alt="تكافل العربية للرعاية الصحية" style="height:56px">
+          <h1 class="t-h2">أهلًا بك في تكافل</h1>
+          <p class="t-caption" style="max-width:36ch">سجّل دخولك برقم جوالك — لا حاجة لكلمة مرور، ولا تحتاج عضوية لشراء الخدمات.</p>
+        </div>
+        <div class="field">
+          <label for="phone">رقم الجوال</label>
+          <div class="phone-input">
+            <span class="cc">🇸🇦 +966</span>
+            <input id="phone" type="tel" inputmode="numeric" placeholder="5X XXX XXXX" maxlength="9" autocomplete="tel">
+          </div>
+          <span class="err-msg" id="phone-err" hidden>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".9" fill="currentColor"/></svg>
+            أدخل رقمًا صحيحًا من 9 أرقام يبدأ بـ 5
+          </span>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" id="btn-send">أرسل رمز التحقق</button>
+        <p class="t-caption" style="text-align:center">بالمتابعة أنت توافق على <a href="about.html#terms" style="color:var(--c-primary-700);font-weight:600">الشروط</a> و<a href="about.html#privacy" style="color:var(--c-primary-700);font-weight:600">سياسة الخصوصية</a></p>
+      </div>
+
+      <!-- PANE: OTP -->
+      <div class="pane" id="a-otp">
+        <div style="text-align:center;display:grid;gap:8px">
+          <h1 class="t-h2">أدخل رمز التحقق</h1>
+          <p class="t-caption">أرسلنا رمزًا من 4 أرقام إلى <b style="direction:ltr;display:inline-block" id="otp-phone"></b>
+            <button style="color:var(--c-primary-700);font-weight:600" id="edit-phone">تعديل</button></p>
+        </div>
+        <div class="otp-row" id="otp-row"></div>
+        <p class="resend">لم يصلك الرمز؟ <button id="resend" disabled>إعادة الإرسال (<span id="cnt">30</span>)</button></p>
+        <p class="t-caption" style="text-align:center;background:var(--c-surface-2);border-radius:var(--r-md);padding:10px">نموذج عرض: أدخل أي 4 أرقام — جرّب <b>0000</b> لمشاهدة حالة الخطأ</p>
+      </div>
+
+      <!-- PANE: create profile -->
+      <div class="pane" id="a-profile">
+        <div style="display:grid;gap:6px">
+          <h1 class="t-h2">أنشئ ملفك</h1>
+          <p class="t-caption">خطوة أخيرة — نحتاج الأساسيات فقط، ولا نجمع بيانات صحية غير ضرورية.</p>
+        </div>
+        <div class="field"><label for="fullname">الاسم الكامل</label><input class="input" id="fullname" placeholder="مثال: عبدالله محمد الحربي" autocomplete="name"></div>
+        <div class="field"><label for="city">المدينة</label>
+          <select class="input" id="city">
+            <option>الرياض</option><option>جدة</option><option>الدمام</option><option>مكة المكرمة</option><option>المدينة المنورة</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" id="btn-profile">متابعة</button>
+      </div>
+
+      <!-- PANE: consents (separated per privacy policy) -->
+      <div class="pane" id="a-consent">
+        <div style="display:grid;gap:6px">
+          <h1 class="t-h2">الموافقات</h1>
+          <p class="t-caption">موافقات منفصلة — يمكنك تغييرها لاحقًا من الإعدادات في أي وقت.</p>
+        </div>
+        <label class="consent-row">
+          <span class="switch"><input type="checkbox" checked disabled><span class="track"></span></span>
+          <span><b>الشروط والأحكام (إلزامي)</b>قبول شروط الاستخدام وسياسة الخصوصية للاستفادة من المنصة.</span>
+        </label>
+        <label class="consent-row">
+          <span class="switch"><input type="checkbox" id="c-loc"><span class="track"></span></span>
+          <span><b>الموقع الجغرافي</b>لعرض الأقرب إليك وترتيب النتائج حسب المسافة.</span>
+        </label>
+        <label class="consent-row">
+          <span class="switch"><input type="checkbox" id="c-notif"><span class="track"></span></span>
+          <span><b>تنبيهات القرب</b>إشعار واحد كحد أقصى يوميًا عند اقترابك من مركز شريك.</span>
+        </label>
+        <label class="consent-row">
+          <span class="switch"><input type="checkbox" id="c-mkt"><span class="track"></span></span>
+          <span><b>الرسائل التسويقية</b>عروض مختارة عبر الإشعارات — اختياري تمامًا.</span>
+        </label>
+        <button class="btn btn-primary btn-lg btn-block" id="btn-finish">ابدأ استخدام تكافل</button>
+      </div>
+
+      <!-- PANE: success -->
+      <div class="pane" id="a-done">
+        <div class="success-wrap" style="padding-block:8px">
+          <div class="success-ring">
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path class="draw" d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+          </div>
+          <h1 class="t-h2">أهلًا بك يا <span id="done-name">عبدالله</span> 👋</h1>
+          <p class="t-caption" style="max-width:40ch">حسابك جاهز. يمكنك الآن شراء الخدمات بسعر نهائي، أو تفعيل العضوية للخصم الفوري.</p>
+          <div style="display:grid;gap:10px;width:100%;max-width:320px;margin-top:8px">
+            <a class="btn btn-primary btn-lg btn-block" href="index.html">اذهب للرئيسية</a>
+            <a class="btn btn-secondary btn-block" href="membership.html">استكشف العضوية</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const panes = ["a-phone", "a-otp", "a-profile", "a-consent", "a-done"];
+  const show = id => { panes.forEach(p => TK.$("#" + p).classList.toggle("active", p === id)); };
+
+  /* Phone step */
+  TK.$("#btn-send").onclick = () => {
+    const v = TK.$("#phone").value.trim();
+    const ok = /^5\d{8}$/.test(v);
+    TK.$("#phone-err").hidden = ok;
+    TK.$("#phone").classList.toggle("error", !ok);
+    if (!ok) return;
+    TK.$("#otp-phone").textContent = "+966 " + v;
+    show("a-otp"); buildOtp();
+  };
+  TK.$("#edit-phone").onclick = () => show("a-phone");
+
+  /* OTP step */
+  function buildOtp() {
+    const row = TK.$("#otp-row");
+    row.innerHTML = Array.from({ length: 4 }, (_, i) => `<input class="otp-box" maxlength="1" inputmode="numeric" aria-label="خانة ${i + 1}">`).join("");
+    const boxes = TK.$$(".otp-box", row);
+    boxes[0].focus();
+    boxes.forEach((b, i) => {
+      b.addEventListener("input", () => {
+        b.classList.toggle("filled", !!b.value);
+        if (b.value && i < 3) boxes[i + 1].focus();
+        if (boxes.every(x => x.value)) {
+          const code = boxes.map(x => x.value).join("");
+          if (code === "0000") {
+            boxes.forEach(x => { x.style.borderColor = "var(--c-error)"; x.style.animation = "shake .4s"; });
+            TK.toast("رمز غير صحيح — تبقى محاولتان قبل الإيقاف المؤقت", "info", 3000);
+            setTimeout(() => { boxes.forEach(x => { x.value = ""; x.classList.remove("filled"); x.style.borderColor = ""; x.style.animation = ""; }); boxes[0].focus(); }, 700);
+          } else {
+            setTimeout(() => { TK.toast("تم التحقق بنجاح ✓"); show("a-profile"); TK.$("#fullname").focus(); }, 300);
+          }
+        }
+      });
+      b.addEventListener("keydown", ev => { if (ev.key === "Backspace" && !b.value && i > 0) boxes[i - 1].focus(); });
+    });
+    let c = 30;
+    const t = setInterval(() => {
+      c--; const el = TK.$("#cnt"); if (!el) return clearInterval(t);
+      el.textContent = c;
+      if (c <= 0) { clearInterval(t); const r = TK.$("#resend"); r.disabled = false; r.textContent = "إعادة الإرسال"; r.onclick = () => { TK.toast("أُعيد إرسال الرمز (نموذج عرض)", "info"); }; }
+    }, 1000);
+  }
+
+  /* Profile step */
+  TK.$("#btn-profile").onclick = () => {
+    const name = TK.$("#fullname").value.trim();
+    if (name.length < 3) { TK.$("#fullname").classList.add("error"); TK.$("#fullname").focus(); return; }
+    TK.$("#fullname").classList.remove("error");
+    TK.$("#done-name").textContent = name.split(" ")[0];
+    show("a-consent");
+  };
+
+  /* Consent step */
+  TK.$("#btn-finish").onclick = () => show("a-done");
+});
+</script>
+<style>@keyframes shake { 25% { transform: translateX(4px); } 75% { transform: translateX(-4px); } }</style>
+</body>
+</html>

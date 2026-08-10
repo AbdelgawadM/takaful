@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reels الطبي | تكافل</title>
+<meta name="description" content="محتوى طبي قصير موثوق يقودك لقرار صحي: نصائح من ممارسين مرخصين مرتبطة بخدمات وعروض حقيقية.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body class="reels-page" data-footer="none">
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+  <div class="reels-stage" id="stage">
+    <div class="reel-frame" id="frame" tabindex="0" aria-roledescription="عارض مقاطع عمودي" aria-label="Reels الطبي — استخدم الأسهم أو مرر عموديًا للتنقل"></div>
+
+    <div class="reels-side-nav">
+      <button class="icon-btn" id="nav-prev" aria-label="المقطع السابق"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 14 6-6 6 6"/></svg></button>
+      <button class="icon-btn" id="nav-next" aria-label="المقطع التالي"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 10 6 6 6-6"/></svg></button>
+    </div>
+    <div class="reel-hint" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 19V5M12 5l-5 5M12 5l5 5"/></svg>
+      مرر للأعلى للمقطع التالي
+    </div>
+  </div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { icon, art } = TK;
+  const frame = TK.$("#frame");
+  let idx = Math.min(+(new URLSearchParams(location.search).get("i") || 0), TK.reels.length - 1);
+  const saved = new Set();
+
+  function slideHTML(r, i) {
+    const p = TK.providers.find(x => x.id === r.providerId);
+    const ctaHref = r.cta.serviceId ? `service.html?id=${r.cta.serviceId}` : `provider.html?id=${p.id}`;
+    return `
+    <div class="reel-slide" data-i="${i}">
+      <div class="reel-bg">${art(r.hue, i + 2)}</div>
+      <div class="reel-progress">${TK.reels.map((_, j) => `<i class="${j < i ? "done" : ""}" ${j === i ? 'style="background:rgba(255,255,255,.9)"' : ""}></i>`).join("")}</div>
+      <div class="reel-ui">
+        <div class="reel-top">
+          <a class="reel-provider" href="provider.html?id=${p.id}">
+            <span class="avatar" style="width:34px;height:34px;background:hsl(${p.hue},55%,38%)">${p.initial}</span>
+            <span><b>${p.name} ${p.verified ? icon("verified", 13) : ""}</b><small>${p.branch}${r.ad ? " · إعلان" : ""}</small></span>
+          </a>
+          <button class="reel-act" style="grid-auto-flow:column" data-mute aria-label="كتم/تشغيل الصوت"><span class="ra-btn">${icon("mute", 20)}</span></button>
+        </div>
+
+        <div class="reel-actions">
+          <div class="reel-act"><button class="ra-btn ${saved.has(r.id) ? "saved" : ""}" data-save="${r.id}" aria-label="حفظ">${icon("save", 20)}</button>حفظ</div>
+          <div class="reel-act"><button class="ra-btn" data-mock="تم نسخ رابط المقطع" aria-label="مشاركة">${icon("share", 20)}</button>مشاركة</div>
+          <div class="reel-act"><button class="ra-btn" data-report aria-label="إبلاغ">${icon("flag", 20)}</button>إبلاغ</div>
+          <div class="reel-act"><a class="ra-btn" href="provider.html?id=${p.id}" aria-label="صفحة المركز">${icon("pin", 20)}</a>المركز</div>
+        </div>
+
+        <div class="reel-bottom">
+          <div>
+            <div class="reel-title">${r.title}</div>
+            <div class="reel-author">${r.author} — ${r.role} · ${r.views} مشاهدة · ${r.dur}</div>
+          </div>
+          <a class="reel-cta" href="${ctaHref}">${icon("cart", 18)} ${r.cta.label}</a>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function render(direction = 0) {
+    const r = TK.reels[idx];
+    const old = frame.querySelector(".reel-slide");
+    const el = document.createElement("div");
+    el.innerHTML = slideHTML(r, idx);
+    const next = el.firstElementChild;
+    if (old && direction !== 0 && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      next.style.transform = `translateY(${direction > 0 ? "100%" : "-100%"})`;
+      frame.appendChild(next);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        next.style.transform = "";
+        old.style.transform = `translateY(${direction > 0 ? "-100%" : "100%"})`;
+        old.style.opacity = ".4";
+        setTimeout(() => old.remove(), 560);
+      }));
+    } else {
+      frame.innerHTML = "";
+      frame.appendChild(next);
+    }
+  }
+
+  function go(delta) {
+    const n = idx + delta;
+    if (n < 0 || n >= TK.reels.length) return;
+    idx = n; render(delta);
+    history.replaceState(null, "", `?i=${idx}`);
+  }
+
+  /* Interactions: buttons, wheel, touch, keyboard */
+  TK.$("#nav-prev").onclick = () => go(-1);
+  TK.$("#nav-next").onclick = () => go(1);
+
+  let wheelLock = false;
+  TK.$("#stage").addEventListener("wheel", e => {
+    e.preventDefault();
+    if (wheelLock || Math.abs(e.deltaY) < 12) return;
+    wheelLock = true; go(e.deltaY > 0 ? 1 : -1);
+    setTimeout(() => wheelLock = false, 620);
+  }, { passive: false });
+
+  let touchY = null;
+  frame.addEventListener("touchstart", e => touchY = e.touches[0].clientY, { passive: true });
+  frame.addEventListener("touchend", e => {
+    if (touchY == null) return;
+    const dy = touchY - e.changedTouches[0].clientY;
+    if (Math.abs(dy) > 46) go(dy > 0 ? 1 : -1);
+    touchY = null;
+  }, { passive: true });
+
+  addEventListener("keydown", e => {
+    if (e.key === "ArrowDown" || e.key === "PageDown") { e.preventDefault(); go(1); }
+    if (e.key === "ArrowUp" || e.key === "PageUp") { e.preventDefault(); go(-1); }
+  });
+
+  frame.addEventListener("click", e => {
+    const s = e.target.closest("[data-save]");
+    if (s) {
+      const id = s.dataset.save;
+      saved.has(id) ? saved.delete(id) : saved.add(id);
+      s.classList.toggle("saved", saved.has(id));
+      TK.toast(saved.has(id) ? "حُفظ المقطع في مفضلتك" : "أُزيل من المحفوظات", saved.has(id) ? "success" : "info");
+    }
+    if (e.target.closest("[data-report]")) TK.toast("شكرًا لك — استلمنا بلاغك وسيراجعه فريق المحتوى الطبي", "info", 3200);
+    if (e.target.closest("[data-mute]")) TK.toast("تشغيل الصوت (نموذج عرض — لا يوجد ملف فيديو فعلي)", "info");
+  });
+
+  render();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>عروض موثقة | تكافل</title>
+<meta name="description" content="عروض صحية موثقة محددة المدة والشروط من شبكة تكافل — لا أسعار وهمية ولا خصومات شكلية.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="مسار التنقل">
+        <a href="index.html">الرئيسية</a><span class="sep">/</span><span aria-current="page">العروض</span>
+      </nav>
+      <div class="section-head" style="margin-block:16px 0">
+        <div>
+          <span class="kicker">عروض موثقة</span>
+          <h1 class="t-h1">عروض حقيقية، بمدة وشروط واضحة</h1>
+          <p class="t-caption" style="margin-top:8px">كل عرض يُراجع سعره وشروطه قبل النشر، ويُوقف تلقائيًا عند انتهائه.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" aria-label="قائمة العروض">
+    <div class="grid grid-3" id="offers-grid" aria-live="polite"></div>
+
+    <div class="value-band reveal" style="margin-top:56px;grid-template-columns:auto 1fr auto;align-items:center;gap:24px">
+      <span style="width:56px;height:56px;border-radius:18px;background:rgba(255,255,255,.1);display:grid;place-items:center;position:relative">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6ed3bf" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 5 3.2 8.2 7 10 3.8-1.8 7-5 7-10V6Z"/><path d="m9 11.5 2.2 2.2L15.5 9.5"/></svg>
+      </span>
+      <div style="position:relative">
+        <h2 class="t-h3" style="color:#fff">لماذا تثق بعروض تكافل؟</h2>
+        <p style="color:#9fb4d8;font-size:var(--fs-body);margin-top:6px">لا نسمح بأسعار وهمية ثم خصومات شكلية. يُتحقق من السعر الأصلي، وتُعلن الشروط كاملة، ويتأثر ظهور الشريك بجودة التزامه الفعلي عند الزيارة.</p>
+      </div>
+      <a class="btn" href="about.html" style="background:#fff;color:var(--c-primary-800);position:relative">اعرف أكثر</a>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const grid = TK.$("#offers-grid");
+  TK.withSkeleton(grid, TK.skelCards(6), () => {
+    grid.innerHTML = TK.offers.map(TK.offerCard).join("");
+    grid.setAttribute("data-stagger", "");
+    TK.initReveal();
+  }, 650);
+});
+</script>
+</body>
+</html>

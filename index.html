@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تكافل — اعرف أين تذهب، كم ستوفر، وكيف تستخدم حقك خلال ثوانٍ</title>
+<meta name="description" content="تكافل — بوابة وصول صحي ذكية: خصومات فورية، خدمات بسعر نهائي، مراكز قريبة موثقة وبطاقة رقمية.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='7' fill='%231a4397'/><path d='M12 5 6.5 7.4v3.9c0 3.9 2.5 6.4 5.5 7.8 3-1.4 5.5-3.9 5.5-7.8V7.4Z' fill='none' stroke='white' stroke-width='1.7'/></svg>">
+</head>
+<body>
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero-grid">
+      <div>
+        <span class="hero-eyebrow reveal"><span class="dot"></span> أكثر من 120 مركزًا موثقًا في الرياض</span>
+        <h1 class="t-display reveal" id="hero-title" style="transition-delay:.06s">
+          اعرف أين تذهب،<br>
+          <span class="accent">كم ستوفر،
+            <svg viewBox="0 0 220 12" fill="none" preserveAspectRatio="none" height="10"><path d="M3 9C60 3 160 3 217 8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+          </span><br>
+          وكيف تستخدم حقك خلال ثوانٍ.
+        </h1>
+        <p class="hero-sub reveal" style="transition-delay:.12s">
+          تكافل يجمع الخصم الفوري عند الزيارة، وخدمات طبية بسعر نهائي تشتريها مسبقًا،
+          واكتشاف أقرب المراكز الموثقة — في تجربة واحدة بسيطة.
+        </p>
+        <div class="hero-ctas reveal" style="transition-delay:.18s">
+          <a class="btn btn-primary btn-lg" href="services.html" id="cta-buy">اشترِ خدمة الآن</a>
+          <a class="btn btn-secondary btn-lg" href="providers.html" id="cta-near">استكشف القريب منك</a>
+        </div>
+        <button class="search-pill reveal" data-open-search style="max-width:440px;transition-delay:.24s" aria-label="افتح البحث">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          ابحث عن خدمة، تخصص أو مركز…
+        </button>
+        <div class="hero-proof reveal" style="margin-top:28px;transition-delay:.3s">
+          <div class="hp-item"><strong>3.8 مليون ر.س</strong><span>توفير موثق لأعضائنا</span></div>
+          <div class="hp-item"><strong>120+</strong><span>مركز وشريك موثق</span></div>
+          <div class="hp-item"><strong>4.8 ★</strong><span>متوسط تقييم الاستخدام</span></div>
+        </div>
+      </div>
+
+      <!-- Layered visual composition -->
+      <div class="hero-visual reveal-scale" aria-hidden="true">
+        <div class="hv-canvas">
+          <span class="ring" style="width:340px;height:340px;top:8%;inset-inline-end:-8%"></span>
+          <span class="ring" style="width:520px;height:520px;top:-14%;inset-inline-end:-22%;opacity:.6"></span>
+        </div>
+        <div class="hv-float hv-anim hv-wallet" style="top:24%;inset-inline-start:10%" id="hero-card-slot"></div>
+        <div class="hv-float hv-anim d1 hv-card hv-provider" style="top:6%;inset-inline-end:4%">
+          <span class="pc-logo" style="width:42px;height:42px;border-radius:13px;margin:0;border:0;background:linear-gradient(140deg,hsl(150,55%,40%),hsl(150,60%,26%))">د</span>
+          <span class="meta"><b>مختبرات الدقة الطبية</b><span>على بعد 900 متر · مفتوح الآن</span></span>
+        </div>
+        <div class="hv-float hv-anim d2 hv-card hv-discount" style="bottom:16%;inset-inline-end:8%">
+          <span class="big">35%-</span>
+          <small>خصم فوري<br>عند إبراز البطاقة</small>
+        </div>
+        <div class="hv-float hv-anim d3 hv-card hv-savings" style="bottom:4%;inset-inline-start:16%">
+          <span class="amount">+3,840 ر.س</span>
+          <small>توفير موثق هذا العام</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= QUICK ACTIONS ================= -->
+  <section class="qa-section" aria-label="اختصارات سريعة">
+    <div class="container">
+      <div class="quick-actions" data-stagger id="quick-actions"></div>
+    </div>
+  </section>
+
+  <!-- ================= MEMBER STRIP ================= -->
+  <section class="section" style="padding-block:clamp(28px,4vw,44px) 0" aria-label="بطاقتك">
+    <div class="container">
+      <div class="member-strip reveal" id="member-strip"></div>
+    </div>
+  </section>
+
+  <!-- ================= CATEGORIES ================= -->
+  <section class="section" aria-labelledby="cats-title" style="padding-bottom:clamp(20px,3vw,36px)">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="kicker">الأقسام</span><h2 class="t-h2" id="cats-title">تصفح حسب التخصص</h2></div>
+        <a class="section-link" href="services.html">كل الخدمات <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5"/><path d="m12 5-7 7 7 7"/></svg></a>
+      </div>
+      <div class="cat-row" data-stagger id="cat-row"></div>
+    </div>
+  </section>
+
+  <!-- ================= BUY A SERVICE (الأكثر توفيرًا) ================= -->
+  <section class="section" aria-labelledby="buy-title">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="kicker">اشترِ خدمة</span><h2 class="t-h2" id="buy-title">الأكثر توفيرًا هذا الأسبوع</h2>
+        <p class="t-caption" style="margin-top:6px">ادفع الآن واستخدمها لدى المركز — أسعار نهائية بلا مفاجآت</p></div>
+        <a class="section-link" href="services.html">عرض الكل <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5"/><path d="m12 5-7 7 7 7"/></svg></a>
+      </div>
+      <div class="grid grid-4" id="top-services" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ================= NEARBY ================= -->
+  <section class="section" aria-labelledby="near-title" style="background:linear-gradient(to bottom,transparent,var(--c-primary-50) 30%,transparent)">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="kicker">خصومات بالقرب منك</span><h2 class="t-h2" id="near-title">قريب منك الآن</h2>
+        <p class="t-caption" style="margin-top:6px">حي العليا، الرياض · <button class="section-link" data-mock="تحديث الموقع (نموذج عرض)" data-mock-kind="info" style="font-size:inherit">تغيير الموقع</button></p></div>
+        <a class="section-link" href="providers.html">الخريطة الكاملة <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5"/><path d="m12 5-7 7 7 7"/></svg></a>
+      </div>
+      <div class="grid grid-4" id="nearby-grid" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ================= VALUE BAND ================= -->
+  <section class="section" aria-label="لماذا تكافل" style="padding-block:clamp(20px,3vw,40px)">
+    <div class="container">
+      <div class="value-band reveal" id="value-band"></div>
+    </div>
+  </section>
+
+  <!-- ================= OFFERS ================= -->
+  <section class="section" aria-labelledby="offers-title">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="kicker">عروض موثقة</span><h2 class="t-h2" id="offers-title">عروض محددة المدة والشروط</h2></div>
+        <a class="section-link" href="offers.html">كل العروض <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5"/><path d="m12 5-7 7 7 7"/></svg></a>
+      </div>
+      <div class="grid grid-3" id="offers-grid" data-stagger></div>
+    </div>
+  </section>
+
+  <!-- ================= REELS RAIL ================= -->
+  <section class="section" aria-labelledby="reels-title" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="kicker">Reels الطبي</span><h2 class="t-h2" id="reels-title">محتوى قصير يقودك لقرار صحي</h2></div>
+        <a class="section-link" href="reels.html">شاهد الكل <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5"/><path d="m12 5-7 7 7 7"/></svg></a>
+      </div>
+      <div class="hscroll" id="reels-rail" data-stagger></div>
+    </div>
+  </section>
+
+  <!-- ================= MEMBERSHIP CTA ================= -->
+  <section class="section" aria-labelledby="join-title" style="padding-top:0">
+    <div class="container">
+      <div class="value-band reveal" style="grid-template-columns:1.3fr 1fr;align-items:center">
+        <div style="position:relative">
+          <span class="kicker" style="color:var(--c-primary-300);display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:var(--fs-caption);margin-bottom:10px">للمشتركين الجدد</span>
+          <h2 class="t-h2" id="join-title" style="color:#fff;margin-bottom:12px">عضوية واحدة، توفير متكرر لكل العائلة</h2>
+          <p style="color:#9fb4d8;max-width:52ch;margin-bottom:24px">بطاقة رقمية تُقبل لدى الشبكة، خصومات فورية بلا حد للاستخدام، وتنبيهات ذكية عند اقترابك من مركز شريك. ويمكنك دائمًا شراء الخدمات دون عضوية.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <a class="btn btn-lg" href="membership.html" style="background:#fff;color:var(--c-primary-800)">فعّل عضويتك</a>
+            <a class="btn btn-lg btn-ghost" href="services.html" style="color:#dde9f8">أو اشترِ خدمة مباشرة</a>
+          </div>
+        </div>
+        <div style="position:relative;display:grid;place-items:center" id="cta-card-slot"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { icon, art, qrSvg, sar } = TK;
+
+  /* Quick actions */
+  const QA = [
+    { label: "البحث", icon: "search", href: "search.html" },
+    { label: "الأقرب", icon: "pin", href: "providers.html" },
+    { label: "الخدمات", icon: "cart", href: "services.html" },
+    { label: "الخصومات", icon: "tag", href: "offers.html" },
+    { label: "بطاقتي", icon: "qr", href: "membership.html" },
+    { label: "Reels", icon: "reels", href: "reels.html" }
+  ];
+  TK.$("#quick-actions").innerHTML = QA.map(q =>
+    `<a class="qa-item" href="${q.href}"><span class="qa-icon">${icon(q.icon, 24)}</span>${q.label}</a>`).join("");
+
+  /* Member strip (state: active member) */
+  TK.$("#member-strip").innerHTML = `
+    <span class="ms-qr">${qrSvg(TK.user.memberId, 56)}</span>
+    <span class="ms-meta">
+      <b>${TK.user.name}</b>
+      <span>${TK.user.plan} · فعالة حتى 14 يناير 2027 · توفير موثق ${sar(TK.user.verifiedSavings)} ر.س</span>
+    </span>
+    <a class="btn btn-sm" href="membership.html" style="background:#fff;color:var(--c-primary-800);flex-shrink:0">${icon("qr", 16)} أظهر بطاقتك</a>`;
+
+  /* Categories */
+  TK.$("#cat-row").innerHTML = TK.categories.map(c =>
+    `<a class="cat-item" href="services.html?cat=${c.id}"><span class="ci-icon">${icon(c.icon, 26)}</span>${c.label}</a>`).join("");
+
+  /* Top services with skeleton load */
+  const topServices = TK.services.filter(s => s.popular).slice(0, 4);
+  TK.withSkeleton(TK.$("#top-services"), TK.skelCards(4), () => {
+    TK.$("#top-services").innerHTML = topServices.map(TK.serviceCard).join("");
+    TK.$("#top-services").setAttribute("data-stagger", "");
+  }, 700);
+
+  /* Nearby with skeleton load */
+  const nearby = [...TK.providers].sort((a, b) => a.distanceKm - b.distanceKm).slice(0, 4);
+  TK.withSkeleton(TK.$("#nearby-grid"), TK.skelCards(4), () => {
+    TK.$("#nearby-grid").innerHTML = nearby.map(TK.providerCard).join("");
+    TK.$("#nearby-grid").setAttribute("data-stagger", "");
+  }, 950);
+
+  /* Value band */
+  const VB = [
+    { icon: "shield", h: "شبكة موثقة فعليًا", p: "كل مركز يمر بتأهيل وترخيص واختبار ميداني قبل الظهور، ويتأثر ترتيبه بجودة التزامه الفعلي." },
+    { icon: "tag", h: "منفعة واضحة قبل الزيارة", p: "خصم فوري أو سعر نهائي معلن — تعرف بالضبط ماذا ستدفع قبل أن تتحرك من مكانك." },
+    { icon: "trend", h: "توفير مثبت، لا تقديري", p: "نعرض فقط التوفير الموثق من عمليات استخدام تحقق منها المركز. لا أرقام تسويقية." }
+  ];
+  TK.$("#value-band").innerHTML = VB.map(v =>
+    `<div class="vb-item"><span class="vb-icon">${icon(v.icon, 24)}</span><h3>${v.h}</h3><p>${v.p}</p></div>`).join("");
+
+  /* Offers */
+  TK.$("#offers-grid").innerHTML = TK.offers.slice(0, 3).map(TK.offerCard).join("");
+
+  /* Reels rail */
+  TK.$("#reels-rail").innerHTML = TK.reels.map((r, i) => {
+    const p = TK.providers.find(x => x.id === r.providerId);
+    return `<a class="reel-card" href="reels.html?i=${i}">
+      <span class="rc-bg">${art(r.hue, i + 2)}</span>
+      <span class="rc-play">${icon("play", 16)}</span>
+      <span class="rc-dur">${r.dur}</span>
+      <span class="rc-meta"><b>${r.title}</b><span>${p.name} · ${r.views} مشاهدة</span></span>
+    </a>`;
+  }).join("");
+
+  /* Membership card in hero + CTA */
+  const cardHTML = `
+    <div class="tk-card" role="img" aria-label="بطاقة تكافل الرقمية">
+      <svg class="tkc-pattern" viewBox="0 0 430 265" preserveAspectRatio="xMidYMid slice"><defs><pattern id="hex" width="36" height="32" patternUnits="userSpaceOnUse"><path d="M18 2 33 10v16L18 34 3 26V10Z" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".6"/></pattern></defs><rect width="430" height="265" fill="url(#hex)"/></svg>
+      <div class="tk-card-inner">
+        <div class="tkc-top">
+          <img class="logo-invert" src="assets/img/logo.png" alt="تكافل العربية" style="height:30px;opacity:.96">
+          <span class="tkc-status">عضوية فعالة</span>
+        </div>
+        <div class="tkc-mid">
+          <div class="tkc-holder">
+            <div class="t-label">حامل البطاقة</div>
+            <div class="name">${TK.user.name}</div>
+            <div class="tkc-number">${TK.user.memberId}</div>
+          </div>
+          <span class="tkc-qr">${qrSvg(TK.user.memberId, 74)}</span>
+        </div>
+        <div class="tkc-foot"><span>${TK.user.plan}</span><span>تنتهي 01 / 2027</span></div>
+      </div>
+    </div>`;
+  TK.$("#hero-card-slot").innerHTML = cardHTML;
+  TK.$("#cta-card-slot").innerHTML = `<div style="width:min(360px,100%)">${cardHTML}</div>`;
+
+  TK.initReveal();
+});
+</script>
+</body>
+</html>

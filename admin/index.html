@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة الإدارة | تكافل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/pages.css">
+</head>
+<body class="portal" data-chrome="none">
+
+<div class="portal-shell">
+  <aside class="portal-side on-dark" id="side">
+    <a class="brand" href="../index.html" style="flex-direction:column;align-items:flex-start;gap:6px">
+      <img class="brand-logo logo-invert" src="../assets/img/logo.png" alt="تكافل العربية" style="height:40px;opacity:.95">
+      <span style="font-size:.62rem;font-weight:700;letter-spacing:2.5px;color:#6d81ab">ADMIN CONSOLE</span>
+    </a>
+    <nav id="side-nav" aria-label="أقسام لوحة الإدارة"></nav>
+    <div style="margin-top:auto;padding:12px">
+      <a href="../index.html" class="portal-link">→ العودة للموقع</a>
+    </div>
+  </aside>
+
+  <main class="portal-main" id="main">
+    <div class="portal-topbar">
+      <button class="icon-btn portal-menu-btn" id="side-toggle" aria-label="القائمة"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+      <h1 id="page-title">لوحة المؤشرات</h1>
+      <span class="badge badge-neutral">بيانات تجريبية — نموذج واجهة</span>
+      <span class="spacer"></span>
+      <span class="stale-note">آخر تحديث: اليوم 09:41 ص</span>
+      <span class="avatar" style="width:38px;height:38px;background:var(--c-primary-700)">م</span>
+    </div>
+    <div id="content"></div>
+  </main>
+</div>
+
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { icon, sar } = TK;
+
+  const SECTIONS = [
+    { id: "dash", label: "لوحة المؤشرات", icon: "trend", group: "التشغيل" },
+    { id: "users", label: "المستخدمون", icon: "user" },
+    { id: "memberships", label: "العضويات", icon: "card" },
+    { id: "partners", label: "الشركاء", icon: "shield" },
+    { id: "discounts", label: "الخصومات", icon: "tag" },
+    { id: "services", label: "اشترِ خدمة", icon: "cart" },
+    { id: "reels", label: "Reels", icon: "reels", group: "المحتوى" },
+    { id: "content", label: "المحتوى والصفحات", icon: "doc" },
+    { id: "notifications", label: "الإشعارات وGeofence", icon: "bell" },
+    { id: "transactions", label: "المعاملات", icon: "wallet", group: "المالية" },
+    { id: "settlements", label: "التسويات", icon: "doc" },
+    { id: "support", label: "الدعم والبلاغات", icon: "flag", group: "الجودة", badge: "12" },
+    { id: "reports", label: "التقارير", icon: "trend" }
+  ];
+
+  TK.$("#side-nav").innerHTML = SECTIONS.map(s => `
+    ${s.group ? `<div class="portal-nav-label">${s.group}</div>` : ""}
+    <button class="portal-link ${s.id === "dash" ? "active" : ""}" data-sec="${s.id}">
+      ${icon(s.icon, 18)} ${s.label} ${s.badge ? `<span class="badge badge-error">${s.badge}</span>` : ""}
+    </button>`).join("");
+
+  const kpi = (label, value, delta, up = true) => `
+    <div class="card kpi-card">
+      <span class="k-label">${label}</span>
+      <span class="k-value">${value}</span>
+      <span class="k-delta ${up ? "up" : "down"}">${up ? "▲" : "▼"} ${delta} عن الشهر الماضي</span>
+    </div>`;
+
+  const table = (heads, rows) => `
+    <div class="table-wrap"><table class="data-table">
+      <thead><tr>${heads.map(h => `<th>${h}</th>`).join("")}</tr></thead>
+      <tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>
+    </table></div>`;
+
+  const P = TK.providers;
+  const V = { dash: () => `
+      <div class="kpi-grid">
+        ${kpi("الأعضاء الفعالون", "18,420", "6.2%")}
+        ${kpi("منفعة موثقة (30 يومًا)", "4,812 مستخدم", "9.8%")}
+        ${kpi("GMV اشترِ خدمة", sar(412600) + " ر.س", "14.1%")}
+        ${kpi("شكاوى رفض الخصم", "12", "2.4%", false)}
+      </div>
+      <div class="grid" style="grid-template-columns:1.4fr 1fr;margin-top:16px">
+        <div class="card info-card">
+          <div style="display:flex;justify-content:space-between;align-items:center"><h3 class="t-h3">استخدام البطاقة أسبوعيًا</h3><span class="badge badge-benefit">آخر 8 أسابيع</span></div>
+          <div class="chart-bars" role="img" aria-label="رسم أعمدة لاستخدام البطاقة">
+            ${[42, 55, 48, 66, 71, 64, 82, 91].map((h, i) => `<div class="bar ${i < 2 ? "muted" : ""}" style="height:${h}%" title="${h * 10} عملية"></div>`).join("")}
+          </div>
+          <div class="chart-x">${["أ1", "أ2", "أ3", "أ4", "أ5", "أ6", "أ7", "أ8"].map(w => `<span>${w}</span>`).join("")}</div>
+        </div>
+        <div class="card info-card">
+          <h3 class="t-h3">قمع التحويل (30 يومًا)</h3>
+          ${[["فتح الرئيسية", "124K", 100], ["مشاهدة مركز/خدمة", "58K", 47], ["بدء دفع", "9.2K", 8], ["قسيمة صادرة", "7.4K", 6], ["استخدام مثبت", "6.1K", 5]].map(([l, v, w]) => `
+            <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px"><span>${l}</span><b>${v}</b></div>
+            <div style="height:8px;border-radius:6px;background:var(--c-surface-2);overflow:hidden"><div style="width:${w}%;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--c-primary-400),var(--c-primary-600))"></div></div></div>`).join("")}
+        </div>
+      </div>
+      <div style="margin-top:16px">${table(
+        ["الشريك", "مؤشر الجودة", "قبول البطاقة", "الشكاوى المفتوحة", "الحالة"],
+        P.slice(0, 5).map(p => [`<span class="cell-main">${p.name}</span>`, `<b style="color:var(--c-primary-700)">${(p.rating * 19).toFixed(0)} / 100</b>`, `${90 + Math.round(p.rating)}%`, p.id === "p8" ? "3" : "0", p.id === "p8" ? '<span class="badge badge-warning">قيد المراجعة</span>' : '<span class="badge badge-success">نشط</span>']))}</div>`,
+
+    users: () => table(
+      ["المستخدم", "الجوال", "العضوية", "التابعون", "آخر نشاط", "إجراء"],
+      [["عبدالله محمد الحربي", "05•••8842", '<span class="badge badge-success">عائلية · فعالة</span>', "3", "اليوم", ""],
+       ["نوف سعد العتيبي", "05•••2210", '<span class="badge badge-success">فردية · فعالة</span>', "0", "أمس", ""],
+       ["محمد علي الزهراني", "05•••7391", '<span class="badge badge-warning">منتهية</span>', "2", "قبل 12 يومًا", ""],
+       ["ريم خالد الشهري", "05•••5518", '<span class="badge badge-neutral">غير مشترك</span>', "0", "اليوم", ""],
+       ["فهد ناصر القحطاني", "05•••9034", '<span class="badge badge-error">محظور</span>', "1", "قبل 40 يومًا", ""]
+      ].map(r => { r[0] = `<span class="cell-main">${r[0]}</span>`; r[5] = '<button class="btn btn-secondary btn-sm" data-mock="فتح ملف المستخدم (نموذج عرض)" data-mock-kind="info">عرض</button>'; return r; })),
+
+    memberships: () => `
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+        ${kpi("عضويات فردية", "11,240", "4.1%")}${kpi("عضويات عائلية", "5,830", "7.6%")}${kpi("عضويات شركات", "1,350", "12.3%")}
+      </div>
+      <div style="margin-top:16px">${table(
+        ["الباقة", "السعر السنوي", "الأعضاء", "معدل التجديد", "الحالة"],
+        [["فردية", "199 ر.س", "11,240", "68%", ""], ["عائلية (حتى 5)", "299 ر.س", "5,830", "74%", ""], ["شركات — لكل موظف", "149 ر.س", "1,350", "81%", ""]]
+          .map(r => { r[0] = `<span class="cell-main">${r[0]}</span>`; r[4] = '<span class="badge badge-success">نشطة</span>'; return r; }))}</div>`,
+
+    partners: () => table(
+      ["المنشأة", "النوع", "الفروع", "الترخيص", "مؤشر الجودة", "الحالة"],
+      P.map(p => [`<span class="cell-main">${p.name}</span>`, p.type, p.branches.length, '<span class="badge badge-success">موثق</span>', `${(p.rating * 19).toFixed(0)}/100`, p.verified ? '<span class="badge badge-success">نشط</span>' : '<span class="badge badge-warning">بانتظار التوثيق</span>'])),
+
+    discounts: () => table(
+      ["الشريك", "القسم", "الخصم", "الصلاحية", "الحالة"],
+      P.flatMap(p => p.discounts.slice(0, 2).map(d => [`<span class="cell-main">${p.name}</span>`, d.dept, `<b style="color:var(--c-primary-700)">${d.value}</b>`, "2026-12-31", '<span class="badge badge-success">فعال</span>'])).slice(0, 8)),
+
+    services: () => table(
+      ["الخدمة", "الشريك", "السعر النهائي", "المباع (30ي)", "الاسترداد", "الحالة"],
+      TK.services.slice(0, 8).map(s => {
+        const p = P.find(x => x.id === s.providerId);
+        return [`<span class="cell-main">${s.title}</span>`, p.name, `<b>${sar(s.price)} ر.س</b>`, Math.round(s.price % 97 + 12), "1.2%", '<span class="badge badge-success">منشورة</span>'];
+      })),
+
+    reels: () => table(
+      ["المقطع", "المركز", "الحالة", "مشاهدات", "تحويل", "وسم إعلان"],
+      TK.reels.map(r => {
+        const p = P.find(x => x.id === r.providerId);
+        return [`<span class="cell-main">${r.title}</span>`, p.name, '<span class="badge badge-success">منشور</span>', r.views, "3.4%", r.ad ? '<span class="badge badge-warning">إعلان</span>' : "—"];
+      })),
+
+    content: () => `<div class="grid grid-2">
+      <div class="card info-card"><h3 class="t-h3">سلايدر الرئيسية</h3><p class="t-caption">3 شرائح نشطة — آخر تعديل أمس.</p><button class="btn btn-secondary btn-sm" data-mock="إدارة السلايدر (نموذج عرض)" data-mock-kind="info">إدارة</button></div>
+      <div class="card info-card"><h3 class="t-h3">الأقسام والمدن</h3><p class="t-caption">8 أقسام · مدينة نشطة واحدة (الرياض) — التوسع وفق خطة الإطلاق.</p><button class="btn btn-secondary btn-sm" data-mock="إدارة الأقسام (نموذج عرض)" data-mock-kind="info">إدارة</button></div>
+      <div class="card info-card"><h3 class="t-h3">الصفحات الثابتة</h3><p class="t-caption">الشروط، الخصوصية، الأسئلة الشائعة.</p><button class="btn btn-secondary btn-sm" data-mock="تحرير الصفحات (نموذج عرض)" data-mock-kind="info">تحرير</button></div>
+      <div class="card info-card"><h3 class="t-h3">قوالب الإشعارات</h3><p class="t-caption">12 قالبًا · حدود التكرار: 1/يوم، 3/أسبوع.</p><button class="btn btn-secondary btn-sm" data-mock="إدارة القوالب (نموذج عرض)" data-mock-kind="info">إدارة</button></div>
+    </div>`,
+
+    notifications: () => `
+      <div class="alert alert-info" style="margin-bottom:16px">${icon("info", 18)}<span>ضوابط عدم الإزعاج مفعلة: حد أقصى إشعار مكاني واحد يوميًا، وفترة تهدئة 7 أيام لكل فرع.</span></div>
+      ${table(["الحملة", "الشريحة", "النوع", "المرسل", "نسبة الفتح", "الحالة"],
+      [["قرب شريك — أعضاء", "أعضاء فعالون", "Geofence", "8,420", "31%", ""], ["خدمتك جاهزة هنا", "حاملو قسائم", "Geofence", "1,203", "58%", ""], ["تجديد العضوية", "تنتهي خلال 14 يومًا", "Push", "940", "22%", ""], ["عروض الأسبوع", "موافقة تسويق", "Push", "12,100", "12%", ""]]
+        .map(r => { r[0] = `<span class="cell-main">${r[0]}</span>`; r.push('<span class="badge badge-success">نشطة</span>'); return r; }))}`,
+
+    transactions: () => table(
+      ["العملية", "المستخدم", "الخدمة", "المبلغ", "الوسيلة", "الحالة"],
+      [["TX-90211", "عبدالله الحربي", "الفحص الشامل المتقدم", "199", "مدى", '<span class="badge badge-success">ناجحة</span>'],
+       ["TX-90210", "ريم الشهري", "تنظيف الأسنان", "149", "Apple Pay", '<span class="badge badge-success">ناجحة</span>'],
+       ["TX-90207", "محمد الزهراني", "ليزر كامل الجسم", "1,499", "Visa", '<span class="badge badge-error">فاشلة</span>'],
+       ["TX-90201", "نوف العتيبي", "فحص نظر + نظارة", "349", "مدى", '<span class="badge badge-warning">استرداد جزئي</span>'],
+       ["TX-90198", "سارة الدوسري", "تبييض بالليزر", "799", "مدى", '<span class="badge badge-warning">قيد النزاع</span>']
+      ].map(r => { r[0] = `<span class="cell-main" style="direction:ltr;display:inline-block">${r[0]}</span>`; r[3] = `<b>${r[3]} ر.س</b>`; return r; })),
+
+    settlements: () => `
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+        ${kpi("مستحق للشركاء", sar(186300) + " ر.س", "8.2%")}${kpi("محجوز للنزاعات", sar(4120) + " ر.س", "1.1%", false)}${kpi("دورة التسوية", "كل 14 يومًا", "0%")}
+      </div>
+      <div style="margin-top:16px">${table(["الشريك", "الفترة", "العمليات", "الصافي المستحق", "الحالة"],
+      [["مختبرات الدقة الطبية", "16–31 يوليو", "412", sar(48210), '<span class="badge badge-success">مدفوعة</span>'],
+       ["عيادات ابتسامة الأولى", "16–31 يوليو", "188", sar(21930), '<span class="badge badge-info">بانتظار الاعتماد</span>'],
+       ["مركز الرؤية لطب العيون", "16–31 يوليو", "97", sar(30480), '<span class="badge badge-info">بانتظار الاعتماد</span>'],
+       ["مركز نضارة للجلدية", "16–31 يوليو", "64", sar(52400), '<span class="badge badge-warning">حجز نزاع جزئي</span>']
+      ].map(r => { r[0] = `<span class="cell-main">${r[0]}</span>`; r[3] = `<b>${r[3]} ر.س</b>`; return r; }))}
+      <p class="t-caption" style="margin-top:10px">الاعتماد والصرف يتطلبان موافقة مزدوجة — سجل تدقيق غير قابل للتعديل.</p>`,
+
+    support: () => table(
+      ["البلاغ", "النوع", "المركز/العملية", "العمر", "SLA", "الحالة"],
+      [["#4127", "رفض خصم", "مجمع الشفاء — فرع الشفا", "3 ساعات", "48 س", '<span class="badge badge-error">مفتوح</span>'],
+       ["#4126", "نزاع عملية", "TKV-84988-QR", "يوم", "72 س", '<span class="badge badge-warning">قيد المراجعة</span>'],
+       ["#4121", "شرط غير واضح", "مركز نضارة — حطين", "يومان", "48 س", '<span class="badge badge-info">بانتظار الشريك</span>'],
+       ["#4118", "مشكلة تقنية", "تطبيق iOS", "3 أيام", "24 س", '<span class="badge badge-success">محلول</span>']
+      ].map(r => { r[0] = `<span class="cell-main" style="direction:ltr;display:inline-block">${r[0]}</span>`; return r; })),
+
+    reports: () => `<div class="grid grid-2">
+      ${[["قمع التحويل", "من الاكتشاف حتى الاستخدام المثبت — حسب المدينة والفئة"], ["الاحتفاظ وإعادة الشراء", "عودة 7/30 يومًا ومعدل إعادة الشراء خلال 90 يومًا"], ["أداء الشركاء", "مؤشر الجودة، القبول دون نزاع، وزمن حل الشكاوى"], ["المؤشر الأهم", "المستخدمون الذين حققوا منفعة موثقة خلال آخر 30 يومًا"]]
+        .map(([t, d]) => `<div class="card info-card"><h3 class="t-h3">${t}</h3><p class="t-caption">${d}</p><button class="btn btn-secondary btn-sm" data-mock="تصدير التقرير (نموذج عرض)" data-mock-kind="info">تصدير CSV</button></div>`).join("")}
+    </div>`
+  };
+  V.dash.title = "لوحة المؤشرات";
+
+  const TITLES = Object.fromEntries(SECTIONS.map(s => [s.id, s.label]));
+  function show(id) {
+    TK.$("#page-title").textContent = TITLES[id];
+    TK.$("#content").innerHTML = `<div class="pane active">${(V[id] || V.dash)()}</div>`;
+    TK.$$(".portal-link[data-sec]").forEach(l => l.classList.toggle("active", l.dataset.sec === id));
+    TK.$("#side").classList.remove("open");
+  }
+  TK.$("#side-nav").addEventListener("click", e => {
+    const l = e.target.closest("[data-sec]"); if (l) show(l.dataset.sec);
+  });
+  TK.$("#side-toggle").onclick = () => TK.$("#side").classList.toggle("open");
+  show("dash");
+});
+</script>
+</body>
+</html>

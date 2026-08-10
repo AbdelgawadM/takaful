@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>قسيمتي | تكافل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+  <div class="container" style="padding-block:24px 40px">
+    <nav class="breadcrumb" aria-label="مسار التنقل">
+      <a href="index.html">الرئيسية</a><span class="sep">/</span>
+      <a href="account.html">مشترياتي</a><span class="sep">/</span>
+      <span aria-current="page">القسيمة</span>
+    </nav>
+
+    <div class="voucher-shell" style="margin-top:24px">
+      <div style="display:grid;gap:6px;text-align:center;margin-bottom:20px">
+        <h1 class="t-h2">قسيمة الخدمة</h1>
+        <p class="t-caption">لكل حالة واجهة مختلفة — جرّب الحالات الست:</p>
+        <div class="state-strip" id="state-strip" style="flex-wrap:wrap;justify-content:center"></div>
+      </div>
+
+      <div id="voucher-root"></div>
+
+      <section aria-labelledby="all-v" style="margin-top:48px">
+        <h2 class="t-h3" id="all-v" style="margin-bottom:14px">كل قسائمي</h2>
+        <div style="display:grid;gap:10px" id="voucher-list"></div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { icon, sar, qrSvg } = TK;
+  const params = new URLSearchParams(location.search);
+
+  /* If arriving from checkout (?new=1), synthesize a fresh voucher */
+  let vouchers = [...TK.vouchers];
+  if (params.get("new")) {
+    const s = TK.services.find(x => x.id === params.get("id")) || TK.services[0];
+    const bens = [{ id: "self", name: TK.user.name }, ...TK.user.dependents];
+    const ben = bens.find(b => b.id === (params.get("ben") || "self")) || bens[0];
+    vouchers.unshift({ id: "vNew", code: "TKV-90211-QR", serviceId: s.id, state: "ready", stateLabel: "جاهزة للاستخدام", purchasedAt: "2026-08-10", expiresAt: "2026-11-08", beneficiary: ben.name, branch: s.branches[0], price: s.price, fresh: true });
+  }
+  let current = vouchers[0];
+
+  const stateColors = { ready: "success", booked: "info", used: "neutral", expired: "warning", cancelled: "error", disputed: "warning" };
+
+  function renderStrip() {
+    TK.$("#state-strip").innerHTML = vouchers
+      .filter((v, i, a) => a.findIndex(x => x.state === v.state) === i)
+      .map(v => `<button class="chip ${v.id === current.id ? "active" : ""}" data-v="${v.id}">${v.stateLabel}</button>`).join("");
+  }
+
+  function renderVoucher() {
+    const v = current;
+    const s = TK.services.find(x => x.id === v.serviceId);
+    const p = TK.providers.find(x => x.id === s.providerId);
+    const meta = TK.voucherStateMeta[v.state];
+    const isActive = v.state === "ready" || v.state === "booked";
+
+    TK.$("#voucher-root").innerHTML = `
+      <article class="card voucher-card reveal-scale in" style="overflow:visible">
+        <div class="voucher-top">
+          <span class="badge badge-${stateColors[v.state]}" style="font-size:var(--fs-caption);padding:8px 18px">${v.stateLabel}</span>
+          ${v.fresh ? `<span class="t-caption" style="color:var(--c-success)">صدرت الآن — أُرسلت نسخة إلى جوالك (نموذج عرض)</span>` : ""}
+          <h2 class="t-h3" style="margin-top:6px">${s.title}</h2>
+          <div class="sc-provider" style="justify-content:center">
+            <span class="dot-logo" style="background:hsl(${p.hue},55%,36%)">${p.initial}</span>
+            ${p.name} ${p.verified ? icon("verified", 13) : ""}
+          </div>
+        </div>
+        <div class="voucher-divider" aria-hidden="true"></div>
+        <div class="voucher-bottom">
+          <div class="voucher-qr-wrap" style="${isActive ? "" : "opacity:.35;filter:grayscale(1)"}">
+            ${qrSvg(v.code, 168)}
+          </div>
+          <div style="text-align:center">
+            <span class="voucher-code">${v.code}</span>
+            <p class="t-caption" style="margin-top:4px">${meta.desc}</p>
+          </div>
+          ${v.appointment ? `<div class="alert alert-info">${icon("cal", 18)}<span>موعدك: <b>${v.appointment}</b> — ${v.branch}</span></div>` : ""}
+          ${v.refundState ? `<div class="alert alert-success">${icon("check", 18)}<span>${v.refundState}</span></div>` : ""}
+          ${v.disputeRef ? `<div class="alert alert-warning">${icon("flag", 18)}<span>${v.disputeRef} — التسوية موقوفة مؤقتًا حتى الحل.</span></div>` : ""}
+          <div class="voucher-meta">
+            <div class="vm"><b>${v.beneficiary}</b><span>المستفيد</span></div>
+            <div class="vm"><b>${v.branch}</b><span>الفرع</span></div>
+            <div class="vm"><b>${sar(v.price)} ر.س</b><span>المبلغ المدفوع</span></div>
+            <div class="vm"><b>${v.expiresAt || v.usedAt || v.cancelledAt || "—"}</b><span>${v.state === "used" ? "تاريخ الاستخدام" : v.state === "cancelled" ? "تاريخ الإلغاء" : "صالحة حتى"}</span></div>
+          </div>
+          <div style="display:grid;gap:8px">
+            ${meta.actions.map((a, i) => `<button class="btn ${i === 0 ? "btn-primary" : "btn-secondary"} btn-block" data-mock="${a} (نموذج عرض)" data-mock-kind="info">${a}</button>`).join("")}
+          </div>
+        </div>
+      </article>`;
+  }
+
+  function renderList() {
+    TK.$("#voucher-list").innerHTML = vouchers.map(v => {
+      const s = TK.services.find(x => x.id === v.serviceId);
+      const cl = stateColors[v.state];
+      return `<button class="card card-hover voucher-row" data-v="${v.id}">
+        <span class="vr-icon" style="background:var(--c-${cl === "neutral" ? "surface-2" : cl + "-bg"});color:var(--c-${cl === "neutral" ? "muted" : cl})">${icon("qr", 22)}</span>
+        <span class="vr-main"><b>${s.title}</b><span>${v.beneficiary} · ${v.purchasedAt}</span></span>
+        <span class="badge badge-${cl}">${v.stateLabel}</span>
+      </button>`;
+    }).join("");
+  }
+
+  document.addEventListener("click", e => {
+    const el = e.target.closest("[data-v]");
+    if (!el) return;
+    current = vouchers.find(v => v.id === el.dataset.v);
+    renderStrip(); renderVoucher();
+    TK.$("#voucher-root").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  renderStrip(); renderVoucher(); renderList();
+  TK.initReveal();
+});
+</script>
+</body>
+</html>

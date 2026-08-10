@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>صفحة المركز | تكافل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+  <div class="container" style="padding-top:20px">
+    <nav class="breadcrumb" aria-label="مسار التنقل">
+      <a href="index.html">الرئيسية</a><span class="sep">/</span>
+      <a href="providers.html">الأقرب</a><span class="sep">/</span>
+      <span aria-current="page" id="bc-name">المركز</span>
+    </nav>
+  </div>
+
+  <div class="container" id="pd-root" style="padding-top:16px"></div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { icon, art, sar } = TK;
+  const id = new URLSearchParams(location.search).get("id") || "p1";
+  const p = TK.providers.find(x => x.id === id) || TK.providers[0];
+  document.title = `${p.name} | تكافل`;
+  TK.$("#bc-name").textContent = p.name;
+  const services = TK.services.filter(s => s.providerId === p.id);
+  const reels = TK.reels.filter(r => r.providerId === p.id);
+
+  TK.$("#pd-root").innerHTML = `
+    <div class="pd-cover reveal-scale">${art(p.hue, 5)}</div>
+
+    <div class="pd-head">
+      ${TK.logoBadge(p, 88, 26)}
+      <div class="pd-title">
+        <h1>${p.name}
+          ${p.verified ? `<span class="badge badge-info" style="font-size:var(--fs-label)">${icon("verified", 14)} مركز موثق</span>` : ""}
+        </h1>
+        <div class="pc-meta" style="margin-top:8px;display:flex;gap:8px 14px;flex-wrap:wrap;color:var(--c-muted);font-size:var(--fs-body)">
+          <span>${p.type} · ${p.specialty}</span>
+          <span class="rating">${icon("star", 15)} ${p.rating} <span class="count">(${sar(p.ratingCount)} تقييم مثبت)</span></span>
+          <span class="badge ${p.open ? "badge-open" : "badge-closed"}">${p.open ? `مفتوح الآن · حتى ${p.closesAt}` : `مغلق · يفتح ${p.opensAt}`}</span>
+        </div>
+      </div>
+      <div class="pd-actions">
+        <button class="icon-btn" aria-label="حفظ في المفضلة" id="fav-btn">${icon("heart", 20)}</button>
+        <button class="icon-btn" aria-label="مشاركة" data-mock="تم نسخ رابط المركز">${icon("share", 20)}</button>
+        <button class="btn btn-secondary" data-mock="الاتصال بـ ${p.phone} (نموذج عرض)" data-mock-kind="info">${icon("phone", 18)} اتصال</button>
+        <button class="btn btn-primary" data-directions="${p.name}">${icon("direction", 18)} الاتجاهات</button>
+      </div>
+    </div>
+
+    <div class="pd-layout">
+      <div style="display:grid;gap:clamp(28px,4vw,44px)">
+
+        <section aria-labelledby="ben-title">
+          <h2 class="t-h3" id="ben-title" style="margin-bottom:14px">منفعتك في هذا المركز</h2>
+          <div class="member-strip" style="background:linear-gradient(120deg,var(--c-primary-700),var(--c-primary-900))">
+            <span style="width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.14);display:grid;place-items:center;flex-shrink:0">${icon(p.benefit.kind === "price" ? "tag" : "sparkle", 26)}</span>
+            <span class="ms-meta">
+              <b>${p.benefit.label}</b>
+              <span>${p.benefit.kind === "discount" ? "أبرز بطاقتك الرقمية قبل إصدار الفاتورة وادفع للمركز مباشرة بعد الخصم." : "ادفع داخل تكافل واستلم قسيمة QR تستخدمها في الفرع."}</span>
+            </span>
+            <a class="btn btn-sm" href="${p.benefit.kind === "discount" ? "membership.html" : "services.html"}" style="background:#fff;color:var(--c-primary-800);flex-shrink:0">${p.benefit.kind === "discount" ? "أظهر بطاقتك" : "اشترِ خدمة"}</a>
+          </div>
+        </section>
+
+        <section aria-labelledby="disc-title">
+          <h2 class="t-h3" id="disc-title" style="margin-bottom:14px">الخصومات حسب القسم</h2>
+          <div class="discount-table reveal">
+            ${p.discounts.map(d => `<div class="discount-row"><span>${d.dept}</span><span class="dr-value">${d.value}</span></div>`).join("")}
+          </div>
+        </section>
+
+        ${services.length ? `
+        <section aria-labelledby="srv-title">
+          <div class="section-head" style="margin-bottom:16px">
+            <h2 class="t-h3" id="srv-title">خدمات بسعر نهائي من هذا المركز</h2>
+          </div>
+          <div class="grid grid-2" data-stagger>${services.map(TK.serviceCard).join("")}</div>
+        </section>` : ""}
+
+        ${reels.length ? `
+        <section aria-labelledby="rls-title">
+          <h2 class="t-h3" id="rls-title" style="margin-bottom:16px">من محتوى المركز</h2>
+          <div class="hscroll">${reels.map(r => {
+            const i = TK.reels.indexOf(r);
+            return `<a class="reel-card" href="reels.html?i=${i}">
+              <span class="rc-bg">${art(r.hue, i + 2)}</span>
+              <span class="rc-play">${icon("play", 16)}</span><span class="rc-dur">${r.dur}</span>
+              <span class="rc-meta"><b>${r.title}</b><span>${r.views} مشاهدة</span></span></a>`;
+          }).join("")}</div>
+        </section>` : ""}
+
+        <section aria-labelledby="about-title">
+          <h2 class="t-h3" id="about-title" style="margin-bottom:12px">عن المركز</h2>
+          <p style="color:var(--c-muted);max-width:70ch">${p.about}</p>
+        </section>
+
+        <section aria-labelledby="terms-title">
+          <h2 class="t-h3" id="terms-title" style="margin-bottom:14px">الشروط والأحكام</h2>
+          <ul class="terms-list">
+            ${p.terms.map(t => `<li>${icon("check", 17)}<span>${t}</span></li>`).join("")}
+          </ul>
+          <div class="alert alert-info" style="margin-top:18px">
+            ${icon("info", 18)}
+            <span>واجهت مشكلة في تطبيق الخصم؟ <button style="font-weight:700;text-decoration:underline" data-mock="تم فتح بلاغ سريع مرتبط بالفرع والوقت — سنتابع الحل خلال 48 ساعة" data-mock-kind="info">أرسل بلاغًا سريعًا</button> مرتبطًا بالفرع والوقت وسنتابع الحل.</span>
+          </div>
+        </section>
+      </div>
+
+      <aside class="pd-side">
+        <div class="card info-card reveal">
+          <h3 class="t-h3">معلومات الزيارة</h3>
+          <div class="info-row">${icon("pin", 19)}<span>${p.address}<br><span class="distance-chip" style="margin-top:4px">${icon("direction", 13)} على بعد ${p.distanceKm} كم</span></span></div>
+          <div class="info-row">${icon("clock", 19)}<span>${p.hours}</span></div>
+          <div class="info-row">${icon("phone", 19)}<span style="direction:ltr">${p.phone}</span></div>
+          <button class="btn btn-primary btn-block" data-directions="${p.name}">${icon("direction", 18)} ابدأ التوجيه</button>
+        </div>
+
+        <div class="card info-card reveal">
+          <h3 class="t-h3">الفروع (${p.branches.length})</h3>
+          ${p.branches.map((b, i) => `
+            <div class="info-row" style="justify-content:space-between">
+              <span style="display:flex;gap:10px">${icon("pin", 18)}${b}</span>
+              ${i === 0 ? '<span class="badge badge-benefit">الأقرب إليك</span>' : ""}
+            </div>`).join("")}
+          <p class="t-caption">المنفعة مرتبطة بالفرع — تأكد من الأهلية قبل التوجه.</p>
+        </div>
+
+        <div class="card info-card reveal" style="background:var(--c-primary-50);border-color:var(--c-primary-200)">
+          <div style="display:flex;gap:12px;align-items:center">
+            <span style="width:44px;height:44px;border-radius:14px;background:var(--c-primary-600);color:#fff;display:grid;place-items:center;flex-shrink:0">${icon("shield", 22)}</span>
+            <div>
+              <b style="color:var(--c-ink)">مركز خاضع لمؤشر الجودة</b>
+              <p class="t-caption" style="margin-top:2px">قبول البطاقة، صحة الأسعار، وسرعة حل الشكاوى تُقاس باستمرار.</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>`;
+
+  /* Favorite toggle */
+  let fav = false;
+  TK.$("#fav-btn").addEventListener("click", function () {
+    fav = !fav;
+    this.style.background = fav ? "var(--c-error-bg)" : "";
+    this.style.color = fav ? "var(--c-error)" : "";
+    this.style.borderColor = fav ? "transparent" : "";
+    TK.toast(fav ? "أُضيف المركز إلى المفضلة" : "أُزيل من المفضلة", fav ? "success" : "info");
+  });
+
+  TK.initReveal();
+});
+</script>
+</body>
+</html>

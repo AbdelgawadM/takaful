@@ -1,0 +1,138 @@
+/* ============================================================
+   TAKAFUL — Design Tokens
+   Brand: Takaful Al Arabia — navy #1A4397 + sky #05AAE0
+   Typeface: itf Ghroob Arabic (brand font, local files)
+   ============================================================ */
+
+@font-face {
+  font-family: "itf Ghroob Arabic";
+  src: url("../fonts/itfGhroobArabic-Light.otf") format("opentype");
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "itf Ghroob Arabic";
+  src: url("../fonts/itfGhroobArabic-Regular.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "itf Ghroob Arabic";
+  src: url("../fonts/itfGhroobArabic-Medium.otf") format("opentype");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "itf Ghroob Arabic";
+  src: url("../fonts/itfGhroobArabic-Bold.otf") format("opentype");
+  font-weight: 600 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "itf Ghroob Arabic";
+  src: url("../fonts/itfGhroobArabic-ExtraBold.otf") format("opentype");
+  font-weight: 800; font-style: normal; font-display: swap;
+}
+
+:root {
+  /* ---------- Brand color — navy (primary) ---------- */
+  --c-primary-900: #0e2557;
+  --c-primary-800: #143577;
+  --c-primary-700: #1a4397;   /* logo navy */
+  --c-primary-600: #1e4aa4;   /* main UI navy */
+  --c-primary-500: #2c5ab8;
+  --c-primary-400: #4f7bd0;
+  --c-primary-300: #83a6e3;
+  --c-primary-200: #b6ccf0;
+  --c-primary-100: #dbe6f8;
+  --c-primary-50:  #eef3fc;
+
+  /* ---------- Brand color — sky (secondary) ---------- */
+  --c-accent-600: #0590c2;
+  --c-accent-500: #05aae0;    /* logo sky */
+  --c-accent-300: #7dd4f2;
+  --c-accent-100: #d9f1fb;
+
+  /* warm star/rating gold (kept warm on purpose) */
+  --c-star: #f0b429;
+
+  /* ---------- Semantic ---------- */
+  --c-success: #0e8f5a;
+  --c-success-bg: #e5f6ee;
+  --c-warning: #b26a00;
+  --c-warning-bg: #fdf2df;
+  --c-error: #c23934;
+  --c-error-bg: #fceceb;
+  --c-info: #0590c2;
+  --c-info-bg: #e3f4fb;
+
+  /* ---------- Neutrals (blue-tinted) ---------- */
+  --c-ink: #101b33;           /* headings */
+  --c-text: #2e3d55;          /* body */
+  --c-muted: #64748b;         /* secondary text */
+  --c-faint: #97a3b8;         /* placeholders */
+  --c-border: #e3e8f0;
+  --c-border-strong: #cfd8e6;
+  --c-bg: #f6f8fb;            /* page background */
+  --c-surface: #ffffff;       /* cards */
+  --c-surface-2: #eff3f8;     /* nested surfaces */
+  --c-dark-surface: #0b1631;  /* dark panels */
+  --c-dark-surface-2: #13244d;
+
+  /* ---------- Elevation ---------- */
+  --shadow-xs: 0 1px 2px rgba(13, 23, 51, .05);
+  --shadow-sm: 0 2px 8px rgba(13, 23, 51, .06);
+  --shadow-md: 0 6px 24px rgba(13, 23, 51, .08);
+  --shadow-lg: 0 16px 48px rgba(13, 23, 51, .13);
+  --shadow-card: 0 1px 2px rgba(13,23,51,.04), 0 8px 28px rgba(13,23,51,.07);
+  --shadow-float: 0 24px 64px rgba(10, 26, 68, .22);
+
+  /* ---------- Radius ---------- */
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 28px;
+  --r-full: 999px;
+
+  /* ---------- Spacing scale ---------- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-7: 32px; --sp-8: 40px;
+  --sp-9: 56px; --sp-10: 72px; --sp-11: 96px; --sp-12: 128px;
+
+  /* ---------- Typography ---------- */
+  --font: "itf Ghroob Arabic", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --fs-display: clamp(2.1rem, 4.6vw, 3.4rem);
+  --fs-h1: clamp(1.8rem, 3.4vw, 2.5rem);
+  --fs-h2: clamp(1.4rem, 2.4vw, 1.85rem);
+  --fs-h3: 1.22rem;
+  --fs-body-lg: 1.08rem;
+  --fs-body: .96rem;
+  --fs-caption: .82rem;
+  --fs-label: .74rem;
+  --lh-tight: 1.3;
+  --lh-normal: 1.7;
+  --lh-loose: 1.95;
+
+  /* ---------- Motion ---------- */
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-spring: cubic-bezier(.34, 1.4, .64, 1);
+  --ease-io: cubic-bezier(.65, 0, .35, 1);
+  --t-fast: 160ms;
+  --t-base: 260ms;
+  --t-slow: 440ms;
+
+  /* ---------- Layout ---------- */
+  --container: 1200px;
+  --header-h: 76px;
+  --header-h-scrolled: 62px;
+  --bottomnav-h: 66px;
+}
+
+/* Dark panel context (membership card, footer, admin sidebar) */
+.on-dark {
+  --c-ink: #f2f6fc;
+  --c-text: #cdd9ee;
+  --c-muted: #8fa2c4;
+  --c-border: rgba(255, 255, 255, .1);
+}
+
+/* Brand logo helpers */
+.brand-logo { display: block; width: auto; }
+.logo-invert { filter: brightness(0) invert(1); }

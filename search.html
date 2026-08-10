@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>البحث | تكافل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+  <div class="container" style="padding-block:28px 40px;max-width:860px">
+    <h1 class="t-h1" style="margin-bottom:20px">ابحث في تكافل</h1>
+
+    <div class="search-box" style="animation:none">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" style="color:var(--c-primary-600)"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      <input type="search" id="q" placeholder="طبيب، تخصص، خدمة، مركز، صيدلية أو مستشفى…" autocomplete="off" aria-label="البحث">
+      <button class="icon-btn" id="clear-q" aria-label="مسح البحث" hidden style="border:0;background:var(--c-surface-2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+    </div>
+
+    <div class="toolbar" style="position:static;margin-top:14px">
+      <div class="filters-scroll" id="scope-chips" role="tablist" aria-label="نطاق البحث">
+        <button class="chip active" data-scope="all">الكل</button>
+        <button class="chip" data-scope="services">الخدمات</button>
+        <button class="chip" data-scope="providers">المراكز</button>
+        <button class="chip" data-scope="offers">العروض</button>
+      </div>
+    </div>
+
+    <div id="idle-zone">
+      <div class="search-group">
+        <h4 style="display:flex;justify-content:space-between;align-items:center">عمليات بحث سابقة
+          <button style="color:var(--c-primary-700);font-weight:600;font-size:var(--fs-label)" id="clear-recent">مسح السجل</button></h4>
+        <div class="chip-row" id="recent-chips"></div>
+      </div>
+      <div class="search-group"><h4>الأكثر بحثًا هذا الأسبوع</h4><div class="chip-row" id="popular-chips"></div></div>
+      <div class="search-group"><h4>تصفح الأقسام</h4><div class="chip-row" id="cat-chips"></div></div>
+    </div>
+
+    <div id="results-zone" hidden style="margin-top:24px" aria-live="polite"></div>
+  </div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { icon, sar } = TK;
+  const q = TK.$("#q"), idle = TK.$("#idle-zone"), zone = TK.$("#results-zone"), clearBtn = TK.$("#clear-q");
+  let scope = "all";
+  let recent = [...TK.searchRecent];
+
+  const renderRecent = () => {
+    TK.$("#recent-chips").innerHTML = recent.length
+      ? recent.map(t => `<button class="chip" data-q="${t}">${icon("clock", 13)} ${t}</button>`).join("")
+      : `<span class="t-caption">لا يوجد سجل بحث — ابدأ بالبحث وسيظهر هنا.</span>`;
+  };
+  renderRecent();
+  TK.$("#popular-chips").innerHTML = TK.searchPopular.map(t => `<button class="chip" data-q="${t}">${icon("trend", 13)} ${t}</button>`).join("");
+  TK.$("#cat-chips").innerHTML = TK.categories.map(c => `<a class="chip" href="services.html?cat=${c.id}">${c.label}</a>`).join("");
+  TK.$("#clear-recent").onclick = () => { recent = []; renderRecent(); };
+
+  TK.$("#scope-chips").addEventListener("click", e => {
+    const c = e.target.closest("[data-scope]"); if (!c) return;
+    TK.$$("#scope-chips .chip").forEach(x => x.classList.toggle("active", x === c));
+    scope = c.dataset.scope; run(q.value);
+  });
+
+  document.addEventListener("click", e => {
+    const chip = e.target.closest(".chip[data-q]");
+    if (chip) { q.value = chip.dataset.q; run(q.value); q.focus(); }
+  });
+
+  clearBtn.onclick = () => { q.value = ""; run(""); q.focus(); };
+
+  const norm = s => s.replace(/[أإآ]/g, "ا").replace(/ة/g, "ه");
+
+  function run(query) {
+    query = query.trim();
+    clearBtn.hidden = !query;
+    if (!query) { idle.hidden = false; zone.hidden = true; return; }
+    if (!recent.includes(query)) { recent.unshift(query); recent = recent.slice(0, 6); renderRecent(); }
+    idle.hidden = true; zone.hidden = false;
+
+    /* skeleton then results */
+    zone.innerHTML = `<div style="display:grid;gap:10px">${Array.from({length:4},()=>'<div class="skeleton" style="height:76px;border-radius:var(--r-lg)"></div>').join("")}</div>`;
+    setTimeout(() => {
+      const nq = norm(query);
+      const provHits = (scope === "all" || scope === "providers") ? TK.providers.filter(p => norm(p.name + p.specialty + p.type + p.district).includes(nq)) : [];
+      const servHits = (scope === "all" || scope === "services") ? TK.services.filter(s => norm(s.title + s.desc).includes(nq)) : [];
+      const offerHits = (scope === "all" || scope === "offers") ? TK.offers.filter(o => norm(o.title).includes(nq)) : [];
+      const total = provHits.length + servHits.length + offerHits.length;
+
+      if (!total) {
+        zone.innerHTML = `
+          <div class="state-block">
+            <div class="st-icon">${icon("search", 30)}</div>
+            <h3>لا توجد نتائج لـ «${query}»</h3>
+            <p>تأكد من الإملاء أو جرّب كلمة أعم مثل «أسنان» أو «تحاليل». يمكنك أيضًا تصفح الأقسام مباشرة.</p>
+            <div class="st-actions">
+              <button class="btn btn-primary" id="reset-search">مسح البحث</button>
+              <a class="btn btn-secondary" href="services.html">تصفح الخدمات</a>
+            </div>
+          </div>`;
+        TK.$("#reset-search").onclick = () => { q.value = ""; run(""); };
+        return;
+      }
+
+      zone.innerHTML = `
+        <p class="t-caption" style="margin-bottom:16px">${total} نتيجة لـ «${query}»</p>
+        ${servHits.length ? `<h2 class="t-h3" style="margin-bottom:12px">الخدمات (${servHits.length})</h2>
+          <div class="grid grid-2" style="margin-bottom:28px">${servHits.map(TK.serviceCard).join("")}</div>` : ""}
+        ${provHits.length ? `<h2 class="t-h3" style="margin-bottom:12px">المراكز (${provHits.length})</h2>
+          <div class="grid grid-2" style="margin-bottom:28px">${provHits.map(TK.providerCard).join("")}</div>` : ""}
+        ${offerHits.length ? `<h2 class="t-h3" style="margin-bottom:12px">العروض (${offerHits.length})</h2>
+          <div class="grid grid-2">${offerHits.map(TK.offerCard).join("")}</div>` : ""}`;
+      TK.initReveal();
+    }, 550);
+  }
+
+  let t;
+  q.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => run(q.value), 220); });
+  q.focus();
+});
+</script>
+</body>
+</html>

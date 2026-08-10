@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حالات الواجهة — مرجع النظام | تكافل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+  <div class="container" style="padding-block:32px 48px;max-width:920px">
+    <span class="kicker" style="display:inline-flex;align-items:center;gap:8px;color:var(--c-primary-600);font-weight:600;font-size:var(--fs-caption)">مرجع نظام التصميم</span>
+    <h1 class="t-h1" style="margin-block:8px">حالات الواجهة الإلزامية</h1>
+    <p class="t-caption" style="margin-bottom:36px;max-width:60ch">وفق كتاب المشروع (§11): كل شاشة يجب أن تدعم هذه الحالات. هذه الصفحة مرجع حي للمكونات كما تظهر فعليًا في الصفحات.</p>
+
+    <div style="display:grid;gap:44px">
+
+      <section aria-labelledby="st-1">
+        <h2 class="t-h3" id="st-1" style="margin-bottom:6px">1 — التحميل الهيكلي (Skeleton)</h2>
+        <p class="t-caption" style="margin-bottom:14px">بدل مؤشر دوّار عام — يحافظ على تكوين الشاشة ويقلل القفز البصري. مستخدم في: الرئيسية، الأقرب، الخدمات، البحث.</p>
+        <div class="grid grid-3" id="skeleton-demo"></div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:12px" id="replay-skel">إعادة تشغيل التحميل</button>
+      </section>
+
+      <section aria-labelledby="st-2">
+        <h2 class="t-h3" id="st-2" style="margin-bottom:6px">2 — الفراغ مع تفسير وإجراء</h2>
+        <div class="state-block">
+          <div class="st-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4.5L5 21V4a1 1 0 0 1 1-1Z"/></svg></div>
+          <h3>لا توجد عناصر محفوظة بعد</h3>
+          <p>احفظ المراكز والخدمات التي تهمك لتصل إليها بسرعة — تظهر هنا فور حفظها.</p>
+          <div class="st-actions"><a class="btn btn-primary" href="providers.html">استكشف المراكز</a></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="st-3">
+        <h2 class="t-h3" id="st-3" style="margin-bottom:6px">3 — خطأ الشبكة مع إعادة المحاولة</h2>
+        <div class="state-block error" id="error-demo">
+          <div class="st-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".9" fill="currentColor"/></svg></div>
+          <h3>تعذر تحميل البيانات</h3>
+          <p>حدث خطأ أثناء الاتصال بالخادم. تحقق من اتصالك ثم أعد المحاولة.</p>
+          <div class="st-actions"><button class="btn btn-primary" id="retry-btn">إعادة المحاولة</button><a class="btn btn-ghost" href="contact.html">تواصل مع الدعم</a></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="st-4">
+        <h2 class="t-h3" id="st-4" style="margin-bottom:6px">4 — صلاحية مرفوضة مع شرح التفعيل</h2>
+        <div class="state-block info">
+          <div class="st-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></div>
+          <h3>نحتاج إذن الموقع لعرض الأقرب إليك</h3>
+          <p>فعّل الوصول للموقع من إعدادات المتصفح: الإعدادات ← الخصوصية ← الموقع ← السماح لتكافل. يمكنك دائمًا التصفح بدون موقع باختيار الحي يدويًا.</p>
+          <div class="st-actions"><button class="btn btn-primary" data-mock="فتح إعدادات الموقع (نموذج عرض)" data-mock-kind="info">تفعيل الموقع</button><button class="btn btn-secondary" data-mock="اختيار الحي يدويًا (نموذج عرض)" data-mock-kind="info">اختيار الحي يدويًا</button></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="st-5">
+        <h2 class="t-h3" id="st-5" style="margin-bottom:6px">5 — جلسة منتهية دون فقد المحتوى</h2>
+        <div class="state-block info">
+          <div class="st-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></div>
+          <h3>انتهت جلستك للحماية</h3>
+          <p>سجّل دخولك مجددًا للمتابعة — <b style="color:var(--c-ink)">سلة مشترياتك وخياراتك محفوظة كما هي.</b></p>
+          <div class="st-actions"><a class="btn btn-primary" href="login.html">تسجيل الدخول</a></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="st-6">
+        <h2 class="t-h3" id="st-6" style="margin-bottom:6px">6 — وضع عدم الاتصال + البيانات القديمة</h2>
+        <p class="t-caption" style="margin-bottom:14px">شريط عدم الاتصال يظهر تلقائيًا أعلى الموقع عند انقطاع الشبكة (جرّب وضع الطيران). البيانات القديمة تُعلَّم بوقت آخر تحديث:</p>
+        <div class="card provider-card" style="max-width:380px">
+          <div class="pc-body" style="padding-top:16px">
+            <div class="pc-toprow">
+              <span class="pc-logo" style="margin-top:0;border:0;background:linear-gradient(140deg,hsl(150,55%,40%),hsl(150,60%,26%))">د</span>
+              <div><h3>مختبرات الدقة الطبية</h3><div class="pc-meta"><span>مختبر · تحاليل شاملة</span></div></div>
+            </div>
+            <div class="pc-meta">
+              <span class="badge badge-neutral">قد لا تكون حالة الفتح محدثة</span>
+              <span class="stale-note"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg> آخر تحديث قبل 25 دقيقة</span>
+            </div>
+            <div class="pc-foot"><span class="rating">★ 4.7</span><button class="btn btn-secondary btn-sm" id="refresh-stale">تحديث الآن</button></div>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:14px" id="simulate-offline">محاكاة انقطاع الاتصال 4 ثوانٍ</button>
+      </section>
+
+      <section aria-labelledby="st-7">
+        <h2 class="t-h3" id="st-7" style="margin-bottom:6px">7 — حالات القسيمة الست</h2>
+        <p class="t-caption" style="margin-bottom:14px">سجل حالات كامل وفق §7 من كتاب المشروع — <a href="voucher.html" style="color:var(--c-primary-700);font-weight:600">جرّبها حية في صفحة القسيمة</a>.</p>
+        <div class="chip-row">
+          <span class="badge badge-success" style="padding:8px 16px">جاهزة</span>
+          <span class="badge badge-info" style="padding:8px 16px">محجوزة</span>
+          <span class="badge badge-neutral" style="padding:8px 16px">مستخدمة</span>
+          <span class="badge badge-warning" style="padding:8px 16px">منتهية</span>
+          <span class="badge badge-error" style="padding:8px 16px">ملغاة</span>
+          <span class="badge badge-warning" style="padding:8px 16px">قيد النزاع</span>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const runSkel = () => {
+    const d = TK.$("#skeleton-demo");
+    TK.withSkeleton(d, TK.skelCards(3), () => {
+      d.innerHTML = TK.services.slice(0, 3).map(TK.serviceCard).join("");
+      TK.initReveal();
+    }, 1400);
+  };
+  runSkel();
+  TK.$("#replay-skel").onclick = runSkel;
+
+  TK.$("#retry-btn").onclick = function () {
+    this.innerHTML = "جاري إعادة المحاولة…"; this.disabled = true;
+    setTimeout(() => { this.innerHTML = "إعادة المحاولة"; this.disabled = false; TK.toast("نجح الاتصال — تم تحديث البيانات"); }, 1200);
+  };
+
+  TK.$("#refresh-stale").onclick = function () {
+    const note = this.closest(".pc-body").querySelector(".stale-note");
+    note.innerHTML = "✓ محدث الآن";
+    TK.toast("تم تحديث بيانات المركز");
+  };
+
+  TK.$("#simulate-offline").onclick = () => {
+    const bar = TK.$(".offline-bar");
+    bar.classList.add("show");
+    TK.toast("محاكاة: انقطع الاتصال", "info");
+    setTimeout(() => { bar.classList.remove("show"); TK.toast("عاد الاتصال بالإنترنت"); }, 4000);
+  };
+});
+</script>
+</body>
+</html>

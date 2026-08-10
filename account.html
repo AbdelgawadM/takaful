@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>المزيد — حسابي | تكافل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+  <div class="container" style="padding-block:28px 40px;max-width:980px">
+    <div class="account-head reveal">
+      <span class="avatar">ع</span>
+      <div style="flex:1;min-width:0">
+        <b style="font-size:1.15rem;display:block" id="acc-name"></b>
+        <span style="color:#9fb4d8;font-size:var(--fs-caption)" id="acc-sub"></span>
+      </div>
+      <a class="btn btn-sm" href="membership.html" style="background:#fff;color:var(--c-primary-800);flex-shrink:0">بطاقتي</a>
+    </div>
+
+    <div class="acc-grid" id="acc-grid"></div>
+
+    <div style="display:grid;gap:10px;margin-top:24px;max-width:380px">
+      <button class="btn btn-secondary" data-mock="تسجيل الخروج (نموذج عرض)" data-mock-kind="info">تسجيل الخروج</button>
+      <button class="btn btn-ghost" style="color:var(--c-error)" data-mock="طلب حذف الحساب يمر بتأكيد مزدوج وفق سياسة الخصوصية" data-mock-kind="info">حذف الحساب</button>
+    </div>
+  </div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { icon, sar } = TK;
+  TK.$("#acc-name").textContent = TK.user.name;
+  TK.$("#acc-sub").textContent = `${TK.user.plan} · فعالة حتى 14 يناير 2027 · توفير موثق ${sar(TK.user.verifiedSavings)} ر.س`;
+
+  const GROUPS = [
+    { title: "حسابي", icon: "user", items: [
+      { l: "الملف الشخصي", i: "user" },
+      { l: "التابعون", i: "user", badge: "3" },
+      { l: "العناوين", i: "pin" },
+      { l: "وسائل الدفع", i: "wallet" }
+    ]},
+    { title: "عملياتي", icon: "doc", items: [
+      { l: "مشترياتي", i: "cart", href: "voucher.html" },
+      { l: "القسائم", i: "qr", href: "voucher.html", badge: "2 نشطة", badgeCls: "badge-success" },
+      { l: "الحجوزات", i: "cal" },
+      { l: "المعاملات", i: "doc" },
+      { l: "الاستردادات", i: "trend" }
+    ]},
+    { title: "تواصلي", icon: "bell", items: [
+      { l: "الإشعارات", i: "bell", badge: "4", badgeCls: "badge-error" },
+      { l: "المفضلة", i: "heart" },
+      { l: "البلاغات", i: "flag" },
+      { l: "الدعم", i: "phone", href: "contact.html" }
+    ]},
+    { title: "إعداداتي", icon: "settings", items: [
+      { l: "اللغة", i: "settings", trail: "العربية" },
+      { l: "الموقع وتنبيهات القرب", i: "pin", toggle: true, on: true },
+      { l: "الخصوصية", i: "shield" },
+      { l: "صلاحيات الإشعارات", i: "bell", toggle: true, on: true }
+    ]},
+    { title: "عن تكافل", icon: "info", items: [
+      { l: "الأسئلة الشائعة", i: "info", href: "faq.html" },
+      { l: "الشروط والأحكام", i: "doc", href: "about.html#terms" },
+      { l: "سياسة الخصوصية", i: "shield", href: "about.html#privacy" },
+      { l: "تواصل معنا", i: "phone", href: "contact.html" }
+    ]}
+  ];
+
+  TK.$("#acc-grid").innerHTML = GROUPS.map(g => `
+    <section class="card acc-group reveal in">
+      <h3>${icon(g.icon, 15)} ${g.title}</h3>
+      ${g.items.map(it => {
+        const inner = `
+          ${icon(it.i, 20)} ${it.l}
+          ${it.badge ? `<span class="badge ${it.badgeCls || "badge-benefit"}">${it.badge}</span>` : ""}
+          ${it.trail ? `<span class="t-caption" style="margin-inline-start:auto">${it.trail}</span>` : ""}
+          ${it.toggle ? `<span class="switch" style="margin-inline-start:auto"><input type="checkbox" ${it.on ? "checked" : ""} aria-label="${it.l}"><span class="track"></span></span>`
+            : (!it.badge && !it.trail ? `<span class="chev">${icon("chevL", 17)}</span>` : "")}`;
+        return it.href
+          ? `<a class="acc-item" href="${it.href}">${inner}</a>`
+          : it.toggle
+            ? `<div class="acc-item" style="cursor:default">${inner}</div>`
+            : `<button class="acc-item" data-mock="شاشة «${it.l}» (نموذج عرض)" data-mock-kind="info">${inner}</button>`;
+      }).join("")}
+    </section>`).join("");
+
+  /* toggles feedback */
+  TK.$("#acc-grid").addEventListener("change", e => {
+    const sw = e.target.closest(".switch input"); if (!sw) return;
+    const label = sw.getAttribute("aria-label");
+    if (label.includes("الموقع")) {
+      TK.toast(sw.checked ? "فُعّلت تنبيهات القرب — بحد أقصى إشعار واحد يوميًا" : "أُوقفت تنبيهات القرب — الخريطة تعمل كالمعتاد", "info", 3200);
+    } else {
+      TK.toast(sw.checked ? `فُعّل: ${label}` : `أُوقف: ${label}`, "info");
+    }
+  });
+
+  TK.initReveal();
+});
+</script>
+</body>
+</html>

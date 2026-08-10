@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الأقرب — الشبكة الطبية | تكافل</title>
+<meta name="description" content="اكتشف أقرب المراكز الطبية الموثقة: خريطة، فلاتر، مسافة، حالة الفتح ونوع المنفعة قبل الزيارة.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="مسار التنقل">
+        <a href="index.html">الرئيسية</a><span class="sep">/</span><span aria-current="page">الأقرب</span>
+      </nav>
+      <div class="section-head" style="margin-block:16px 0">
+        <div>
+          <h1 class="t-h1">قريب منك الآن</h1>
+          <p class="t-caption" style="margin-top:8px" id="results-count">حي العليا، الرياض · جاري التحميل…</p>
+        </div>
+        <div class="segmented" role="tablist" aria-label="طريقة العرض">
+          <button role="tab" aria-selected="true" data-view="split" id="view-split">خريطة + قائمة</button>
+          <button role="tab" aria-selected="false" data-view="list" id="view-list">قائمة</button>
+          <button role="tab" aria-selected="false" data-view="map" id="view-map">خريطة</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" aria-label="نتائج الشبكة الطبية">
+    <div class="toolbar" role="group" aria-label="الفلاتر">
+      <button class="btn btn-secondary btn-sm" id="open-filters" aria-haspopup="dialog">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+        الفلاتر
+      </button>
+      <div class="filters-scroll" id="quick-filters"></div>
+    </div>
+
+    <div class="providers-layout" id="layout" data-view="split">
+      <div class="providers-list" id="list" aria-live="polite"></div>
+
+      <div class="map-panel" id="map-panel" role="img" aria-label="خريطة توضيحية بمواقع المراكز (نموذج عرض)">
+        <div class="mock-map" id="mock-map"></div>
+        <button class="map-search-area" id="search-area" hidden>البحث في هذه المنطقة</button>
+        <div class="map-controls">
+          <button class="icon-btn" aria-label="تكبير" data-mock="تكبير الخريطة (نموذج عرض)" data-mock-kind="info"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+          <button class="icon-btn" aria-label="تصغير" data-mock="تصغير الخريطة (نموذج عرض)" data-mock-kind="info"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+          <button class="icon-btn" aria-label="موقعي" data-mock="تحديد موقعك يتطلب إذن الموقع" data-mock-kind="info"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
+        </div>
+        <div id="map-float"></div>
+      </div>
+    </div>
+
+    <div id="empty-slot" style="margin-top:20px"></div>
+  </section>
+</main>
+
+<!-- Filters modal / bottom sheet -->
+<div class="modal-scrim sheet-on-mobile" id="filters-modal" role="dialog" aria-modal="true" aria-labelledby="filters-title">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h2 class="t-h3" id="filters-title">تصفية النتائج</h2>
+      <button class="icon-btn" data-close-modal aria-label="إغلاق"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div style="display:grid;gap:22px">
+      <div>
+        <h3 class="t-label" style="margin-bottom:10px;color:var(--c-muted)">التخصص</h3>
+        <div class="chip-row" id="f-specialty"></div>
+      </div>
+      <div>
+        <h3 class="t-label" style="margin-bottom:10px;color:var(--c-muted)">نوع المنشأة</h3>
+        <div class="chip-row" id="f-type"></div>
+      </div>
+      <div style="display:grid;gap:12px">
+        <label style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:600;color:var(--c-ink)">
+          مفتوح الآن
+          <span class="switch"><input type="checkbox" id="f-open"><span class="track"></span></span>
+        </label>
+        <label style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:600;color:var(--c-ink)">
+          يخدم الأعضاء (خصم فوري)
+          <span class="switch"><input type="checkbox" id="f-members"><span class="track"></span></span>
+        </label>
+        <label style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:600;color:var(--c-ink)">
+          تتوفر فيه «اشترِ خدمة»
+          <span class="switch"><input type="checkbox" id="f-buy"><span class="track"></span></span>
+        </label>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" style="flex:1" id="apply-filters">عرض النتائج</button>
+        <button class="btn btn-ghost" id="reset-filters">إعادة تعيين</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { icon, sar } = TK;
+  const layout = TK.$("#layout"), list = TK.$("#list"), mapEl = TK.$("#mock-map");
+  const state = { view: "split", spec: null, type: null, open: false, members: false, buy: false };
+
+  /* ---- Quick filter chips ---- */
+  TK.$("#quick-filters").innerHTML = `
+    <button class="chip" data-qf="open">${icon("clock", 14)} مفتوح الآن</button>
+    <button class="chip" data-qf="members">${icon("card", 14)} يخدم الأعضاء</button>
+    <button class="chip" data-qf="buy">${icon("cart", 14)} اشترِ خدمة</button>
+    ${TK.categories.slice(0, 5).map(c => `<button class="chip" data-spec="${c.id}">${c.label}</button>`).join("")}`;
+
+  /* ---- Filters modal content ---- */
+  TK.$("#f-specialty").innerHTML = TK.categories.map(c => `<button class="chip" data-fspec="${c.id}">${c.label}</button>`).join("");
+  const types = [...new Set(TK.providers.map(p => p.type))];
+  TK.$("#f-type").innerHTML = types.map(t => `<button class="chip" data-ftype="${t}">${t}</button>`).join("");
+
+  /* ---- Mock map (SVG street grid) ---- */
+  const positions = { p1: [30, 38], p2: [62, 22], p3: [46, 55], p4: [72, 60], p5: [38, 72], p6: [18, 58], p7: [80, 36], p8: [58, 82] };
+  function drawMap(items) {
+    mapEl.innerHTML = `
+      <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%">
+        <rect width="100" height="100" fill="#eaeef6"/>
+        <g stroke="#d7deeb" stroke-width="1.1" fill="none">
+          ${[14,30,46,62,78,94].map(y => `<path d="M-5 ${y} H105"/>`).join("")}
+          ${[10,26,42,58,74,90].map(x => `<path d="M${x} -5 V105"/>`).join("")}
+        </g>
+        <g stroke="#fff" stroke-width="2.6" stroke-linecap="round" fill="none">
+          <path d="M-5 46 H105"/><path d="M42 -5 V105"/><path d="M-5 78 Q30 70 58 78 T 105 74"/>
+        </g>
+        <g fill="#dde6f2"><circle cx="20" cy="20" r="9"/><rect x="66" y="66" width="18" height="14" rx="3"/><circle cx="86" cy="14" r="7"/></g>
+        <g fill="#cfdaec"><rect x="6" y="84" width="14" height="10" rx="2"/><rect x="48" y="8" width="12" height="9" rx="2"/></g>
+      </svg>
+      <span class="map-me" style="top:46%;inset-inline-start:42%" title="موقعك الحالي"></span>
+      ${items.map(p => {
+        const [x, y] = positions[p.id] || [50, 50];
+        return `<button class="map-pin" style="top:${y}%;inset-inline-start:${x}%" data-pin="${p.id}" aria-label="${p.name} — ${p.benefit.label}">
+          <span class="pin-body">${p.benefit.kind === "price" ? sar(+p.benefit.value) + " ر.س" : p.benefit.value + "-"}</span>
+          <span class="pin-tail"></span>
+        </button>`;
+      }).join("")}`;
+  }
+
+  /* ---- Filtering + render ---- */
+  function filtered() {
+    return TK.providers.filter(p =>
+      (!state.spec || p.tags.includes(state.spec)) &&
+      (!state.type || p.type === state.type) &&
+      (!state.open || p.open) &&
+      (!state.members || p.benefit.kind === "discount") &&
+      (!state.buy || TK.services.some(s => s.providerId === p.id))
+    ).sort((a, b) => a.distanceKm - b.distanceKm);
+  }
+
+  function render(withSkeleton = false) {
+    const items = filtered();
+    const doRender = () => {
+      TK.$("#results-count").textContent = `حي العليا، الرياض · ${items.length} مركز ضمن 10 كم`;
+      if (!items.length) {
+        list.innerHTML = "";
+        TK.$("#empty-slot").innerHTML = `
+          <div class="state-block">
+            <div class="st-icon">${icon("pin", 30)}</div>
+            <h3>لا توجد مراكز تطابق الفلاتر</h3>
+            <p>وسّع نطاق البحث أو أزل بعض الفلاتر — الشبكة تنمو باستمرار في أحياء الرياض.</p>
+            <div class="st-actions"><button class="btn btn-primary" id="empty-reset">إزالة كل الفلاتر</button></div>
+          </div>`;
+        TK.$("#empty-reset").onclick = resetAll;
+      } else {
+        TK.$("#empty-slot").innerHTML = "";
+        list.innerHTML = items.map(TK.providerCard).join("");
+      }
+      drawMap(items);
+      TK.initReveal();
+    };
+    if (withSkeleton) TK.withSkeleton(list, TK.skelCards(4), doRender, 750); else doRender();
+  }
+
+  function resetAll() {
+    Object.assign(state, { spec: null, type: null, open: false, members: false, buy: false });
+    TK.$$("#quick-filters .chip, #f-specialty .chip, #f-type .chip").forEach(c => c.classList.remove("active"));
+    TK.$("#f-open").checked = TK.$("#f-members").checked = TK.$("#f-buy").checked = false;
+    render();
+  }
+
+  /* ---- View switcher ---- */
+  TK.$$(".segmented [data-view]").forEach(b => b.addEventListener("click", () => {
+    TK.$$(".segmented [data-view]").forEach(x => x.setAttribute("aria-selected", x === b));
+    state.view = b.dataset.view;
+    layout.dataset.view = state.view;
+    layout.classList.toggle("list-only", state.view === "list");
+    if (state.view === "map") TK.$("#map-panel").scrollIntoView({ behavior: "smooth", block: "center" });
+  }));
+
+  /* ---- Quick filter interactions ---- */
+  TK.$("#quick-filters").addEventListener("click", e => {
+    const chip = e.target.closest(".chip"); if (!chip) return;
+    chip.classList.toggle("active");
+    if (chip.dataset.qf) state[chip.dataset.qf] = chip.classList.contains("active");
+    if (chip.dataset.spec) {
+      TK.$$("#quick-filters [data-spec]").forEach(c => { if (c !== chip) c.classList.remove("active"); });
+      state.spec = chip.classList.contains("active") ? chip.dataset.spec : null;
+    }
+    render(true);
+  });
+
+  /* ---- Modal ---- */
+  const modal = TK.$("#filters-modal");
+  TK.$("#open-filters").onclick = () => { modal.classList.add("open"); document.body.style.overflow = "hidden"; };
+  const closeModal = () => { modal.classList.remove("open"); document.body.style.overflow = ""; };
+  modal.addEventListener("click", e => { if (e.target === modal || e.target.closest("[data-close-modal]")) closeModal(); });
+  addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+  TK.$("#f-specialty").addEventListener("click", e => {
+    const c = e.target.closest(".chip"); if (!c) return;
+    TK.$$("#f-specialty .chip").forEach(x => { if (x !== c) x.classList.remove("active"); });
+    c.classList.toggle("active");
+    state.spec = c.classList.contains("active") ? c.dataset.fspec : null;
+  });
+  TK.$("#f-type").addEventListener("click", e => {
+    const c = e.target.closest(".chip"); if (!c) return;
+    TK.$$("#f-type .chip").forEach(x => { if (x !== c) x.classList.remove("active"); });
+    c.classList.toggle("active");
+    state.type = c.classList.contains("active") ? c.dataset.ftype : null;
+  });
+  TK.$("#apply-filters").onclick = () => {
+    state.open = TK.$("#f-open").checked;
+    state.members = TK.$("#f-members").checked;
+    state.buy = TK.$("#f-buy").checked;
+    closeModal(); render(true);
+  };
+  TK.$("#reset-filters").onclick = resetAll;
+
+  /* ---- Map pin selection ---- */
+  mapEl.addEventListener("click", e => {
+    const pin = e.target.closest("[data-pin]"); if (!pin) return;
+    TK.$$(".map-pin").forEach(p => p.classList.remove("active"));
+    pin.classList.add("active");
+    const p = TK.providers.find(x => x.id === pin.dataset.pin);
+    TK.$("#map-float").innerHTML = `<div class="map-card-float">${TK.providerCard(p)}</div>`;
+    TK.$("#search-area").hidden = false;
+  });
+  TK.$("#search-area").onclick = function () {
+    this.hidden = true;
+    TK.toast("تم تحديث النتائج لهذه المنطقة (نموذج عرض)", "info");
+    render(true);
+  };
+
+  render(true);
+});
+</script>
+</body>
+</html>
